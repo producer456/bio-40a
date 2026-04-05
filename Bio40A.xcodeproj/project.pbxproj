@@ -1,0 +1,382 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		1AC90367A6966FE613D749FC /* Lesson.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84D2C0013FB14FCBFA30B80C /* Lesson.swift */; };
+		3B33A8F8B5502AD97659AE90 /* LessonDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B28730D6B7C08FCF65D7BB6 /* LessonDetailView.swift */; };
+		3F785A4EC113DEDF6E10C44F /* Progress.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA7FDB7A039C884BD09F5A74 /* Progress.swift */; };
+		446B0DBA51A6B943A046F68C /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 130D0C4B28F9485C6DCF5638 /* HomeView.swift */; };
+		48255BD40D8AB0FC4E9AF704 /* CourseContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = F32ADA10FA7295578FB8E350 /* CourseContent.swift */; };
+		6D8A6B9F35CD5DB254FB945D /* StudyProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 389091E98585E7EAF4607679 /* StudyProgressView.swift */; };
+		6E663C0766B19AE1CB5FB04E /* QuizView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F733307791AF0F82873971CF /* QuizView.swift */; };
+		7CA13ED90D8AFE1E7B64D69D /* QuizListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7648AB5BA6773A06F7BB9DD9 /* QuizListView.swift */; };
+		87785977B732C402373DB35E /* LessonListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFAABF39229EF21CF8131801 /* LessonListView.swift */; };
+		ACECB6470015D9EC9C5FA9CA /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E2D07F979A1FDD198494087 /* ContentView.swift */; };
+		B462A118D850A6EE006443B0 /* FlashcardStudyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76451B7A63D221433919AD08 /* FlashcardStudyView.swift */; };
+		BE1A2BB6027D52A8F8049810 /* FlashcardDeckListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45FC65AF0F1ABA1A7051F54C /* FlashcardDeckListView.swift */; };
+		CE4E4A86F64672A228334365 /* Quiz.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ABC627629526B8213C42C73 /* Quiz.swift */; };
+		E0A380471BD15C3A40F0FF77 /* Bio40AApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D032B63CEE401E2AAC4AD6AB /* Bio40AApp.swift */; };
+		E0E7D43FBFBC89BC51A57191 /* ProgressManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDC31031B648F5AD423D79DC /* ProgressManager.swift */; };
+		F4B7E66E1AB46901298E3DAB /* Flashcard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3699131A7D4286F3F34E9353 /* Flashcard.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		130D0C4B28F9485C6DCF5638 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		1E2D07F979A1FDD198494087 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		3078C2EDB24474044F175AF4 /* Bio40A.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Bio40A.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		3699131A7D4286F3F34E9353 /* Flashcard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Flashcard.swift; sourceTree = "<group>"; };
+		389091E98585E7EAF4607679 /* StudyProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StudyProgressView.swift; sourceTree = "<group>"; };
+		45FC65AF0F1ABA1A7051F54C /* FlashcardDeckListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlashcardDeckListView.swift; sourceTree = "<group>"; };
+		5ABC627629526B8213C42C73 /* Quiz.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Quiz.swift; sourceTree = "<group>"; };
+		5B28730D6B7C08FCF65D7BB6 /* LessonDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LessonDetailView.swift; sourceTree = "<group>"; };
+		76451B7A63D221433919AD08 /* FlashcardStudyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlashcardStudyView.swift; sourceTree = "<group>"; };
+		7648AB5BA6773A06F7BB9DD9 /* QuizListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuizListView.swift; sourceTree = "<group>"; };
+		84D2C0013FB14FCBFA30B80C /* Lesson.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Lesson.swift; sourceTree = "<group>"; };
+		AB90007D83FED6CDF6C26629 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		BFAABF39229EF21CF8131801 /* LessonListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LessonListView.swift; sourceTree = "<group>"; };
+		D032B63CEE401E2AAC4AD6AB /* Bio40AApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bio40AApp.swift; sourceTree = "<group>"; };
+		F32ADA10FA7295578FB8E350 /* CourseContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourseContent.swift; sourceTree = "<group>"; };
+		F733307791AF0F82873971CF /* QuizView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuizView.swift; sourceTree = "<group>"; };
+		FA7FDB7A039C884BD09F5A74 /* Progress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Progress.swift; sourceTree = "<group>"; };
+		FDC31031B648F5AD423D79DC /* ProgressManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressManager.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		06D1AB4695C7383C131EEC0F /* Data */ = {
+			isa = PBXGroup;
+			children = (
+				F32ADA10FA7295578FB8E350 /* CourseContent.swift */,
+			);
+			path = Data;
+			sourceTree = "<group>";
+		};
+		2A49FA6CF973D1CCED5D8D60 /* Bio40A */ = {
+			isa = PBXGroup;
+			children = (
+				D032B63CEE401E2AAC4AD6AB /* Bio40AApp.swift */,
+				1E2D07F979A1FDD198494087 /* ContentView.swift */,
+				AB90007D83FED6CDF6C26629 /* Info.plist */,
+				06D1AB4695C7383C131EEC0F /* Data */,
+				3ACA038E8DD71465291BEF11 /* Models */,
+				D8FACD32EFEC95D0AAC060CA /* Services */,
+				F8511F276EAC43B298767A78 /* Views */,
+			);
+			path = Bio40A;
+			sourceTree = "<group>";
+		};
+		3ACA038E8DD71465291BEF11 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				3699131A7D4286F3F34E9353 /* Flashcard.swift */,
+				84D2C0013FB14FCBFA30B80C /* Lesson.swift */,
+				FA7FDB7A039C884BD09F5A74 /* Progress.swift */,
+				5ABC627629526B8213C42C73 /* Quiz.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		9C528FEEEB4394F8FA50A415 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				3078C2EDB24474044F175AF4 /* Bio40A.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		BD8999F469F2ECF5E65E4CD0 = {
+			isa = PBXGroup;
+			children = (
+				2A49FA6CF973D1CCED5D8D60 /* Bio40A */,
+				9C528FEEEB4394F8FA50A415 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		D8FACD32EFEC95D0AAC060CA /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				FDC31031B648F5AD423D79DC /* ProgressManager.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		F8511F276EAC43B298767A78 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				45FC65AF0F1ABA1A7051F54C /* FlashcardDeckListView.swift */,
+				76451B7A63D221433919AD08 /* FlashcardStudyView.swift */,
+				130D0C4B28F9485C6DCF5638 /* HomeView.swift */,
+				5B28730D6B7C08FCF65D7BB6 /* LessonDetailView.swift */,
+				BFAABF39229EF21CF8131801 /* LessonListView.swift */,
+				7648AB5BA6773A06F7BB9DD9 /* QuizListView.swift */,
+				F733307791AF0F82873971CF /* QuizView.swift */,
+				389091E98585E7EAF4607679 /* StudyProgressView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		172DC503F4A4FDA61BDCB157 /* Bio40A */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 6B7D27F23BED7F2527F22B27 /* Build configuration list for PBXNativeTarget "Bio40A" */;
+			buildPhases = (
+				B404B98D29BA5481A8BA8CE6 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Bio40A;
+			packageProductDependencies = (
+			);
+			productName = Bio40A;
+			productReference = 3078C2EDB24474044F175AF4 /* Bio40A.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		9F671B081BF562CC88858B95 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1600;
+				TargetAttributes = {
+				};
+			};
+			buildConfigurationList = DD607A5E1F706B017BD5B974 /* Build configuration list for PBXProject "Bio40A" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = BD8999F469F2ECF5E65E4CD0;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 9C528FEEEB4394F8FA50A415 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				172DC503F4A4FDA61BDCB157 /* Bio40A */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		B404B98D29BA5481A8BA8CE6 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E0A380471BD15C3A40F0FF77 /* Bio40AApp.swift in Sources */,
+				ACECB6470015D9EC9C5FA9CA /* ContentView.swift in Sources */,
+				48255BD40D8AB0FC4E9AF704 /* CourseContent.swift in Sources */,
+				F4B7E66E1AB46901298E3DAB /* Flashcard.swift in Sources */,
+				BE1A2BB6027D52A8F8049810 /* FlashcardDeckListView.swift in Sources */,
+				B462A118D850A6EE006443B0 /* FlashcardStudyView.swift in Sources */,
+				446B0DBA51A6B943A046F68C /* HomeView.swift in Sources */,
+				1AC90367A6966FE613D749FC /* Lesson.swift in Sources */,
+				3B33A8F8B5502AD97659AE90 /* LessonDetailView.swift in Sources */,
+				87785977B732C402373DB35E /* LessonListView.swift in Sources */,
+				3F785A4EC113DEDF6E10C44F /* Progress.swift in Sources */,
+				E0E7D43FBFBC89BC51A57191 /* ProgressManager.swift in Sources */,
+				CE4E4A86F64672A228334365 /* Quiz.swift in Sources */,
+				7CA13ED90D8AFE1E7B64D69D /* QuizListView.swift in Sources */,
+				6E663C0766B19AE1CB5FB04E /* QuizView.swift in Sources */,
+				6D8A6B9F35CD5DB254FB945D /* StudyProgressView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		0258022CB8549F4AAFA9A59B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CURRENT_PROJECT_VERSION = 1;
+				INFOPLIST_FILE = Bio40A/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.dev.bio40a;
+				SDKROOT = iphoneos;
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_VERSION = 5.9;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		457E7BF7806913DFC71EB23E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CURRENT_PROJECT_VERSION = 1;
+				INFOPLIST_FILE = Bio40A/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.dev.bio40a;
+				SDKROOT = iphoneos;
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_VERSION = 5.9;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		8E8AC2C76B5C55C19C0647E2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		A9A5F952C0BC70A007FB0416 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		6B7D27F23BED7F2527F22B27 /* Build configuration list for PBXNativeTarget "Bio40A" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				457E7BF7806913DFC71EB23E /* Debug */,
+				0258022CB8549F4AAFA9A59B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		DD607A5E1F706B017BD5B974 /* Build configuration list for PBXProject "Bio40A" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A9A5F952C0BC70A007FB0416 /* Debug */,
+				8E8AC2C76B5C55C19C0647E2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 9F671B081BF562CC88858B95 /* Project object */;
+}
