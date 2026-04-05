@@ -42,17 +42,23 @@ struct ContentView: View {
                 }
                 .tag(5)
 
+            MatchingGameListView()
+                .tabItem {
+                    Label("Games", systemImage: "gamecontroller.fill")
+                }
+                .tag(6)
+
             BookmarksView()
                 .tabItem {
                     Label("Bookmarks", systemImage: "star.fill")
                 }
-                .tag(6)
+                .tag(7)
 
             StudyProgressView()
                 .tabItem {
                     Label("Progress", systemImage: "chart.bar.fill")
                 }
-                .tag(7)
+                .tag(8)
         }
         .accentColor(.blue)
     }

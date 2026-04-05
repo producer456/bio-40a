@@ -6,6 +6,8 @@ struct HomeView: View {
     @Binding var selectedTab: Int
     @State private var showWrongAnswers = false
     @State private var showSettings = false
+    @State private var showQuickReview = false
+    @State private var showWeakTopics = false
 
     var body: some View {
         NavigationStack {
@@ -13,9 +15,11 @@ struct HomeView: View {
                 VStack(spacing: 20) {
                     welcomeSection
                     DueSoonSection()
+                    StudyPlanCard(selectedTab: $selectedTab)
                     weekProgressSection
                     quickActionsSection
                     wrongAnswersSection
+                    weakTopicsSection
                     overallStatsSection
                 }
                 .padding()
@@ -39,6 +43,12 @@ struct HomeView: View {
             }
             .navigationDestination(isPresented: $showWrongAnswers) {
                 WrongAnswersView()
+            }
+            .navigationDestination(isPresented: $showQuickReview) {
+                QuickReviewView()
+            }
+            .navigationDestination(isPresented: $showWeakTopics) {
+                WeakTopicsView()
             }
         }
     }
@@ -150,6 +160,12 @@ struct HomeView: View {
                     label: "Flashcards",
                     color: .orange
                 ) { selectedTab = 5 }
+
+                QuickActionButton(
+                    icon: "bolt.fill",
+                    label: "Quick Review",
+                    color: .purple
+                ) { showQuickReview = true }
             }
         }
         .padding()
@@ -190,6 +206,62 @@ struct HomeView: View {
                             Text("\(wrongCount) question\(wrongCount == 1 ? "" : "s") to review")
                                 .font(.caption)
                                 .foregroundColor(.secondary)
+                        }
+
+                        Spacer()
+
+                        Image(systemName: "chevron.right")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
+                    .padding()
+                    .background(
+                        RoundedRectangle(cornerRadius: 16)
+                            .fill(Color(.systemBackground))
+                            .shadow(color: .black.opacity(0.05), radius: 8, y: 2)
+                    )
+                }
+            }
+        }
+    }
+
+    // MARK: - Weak Topics
+
+    private var weakTopicsSection: some View {
+        let weakCount = progress.weakTopicStrengths.count
+        let hasData = !progress.topicStrengths.isEmpty
+
+        return Group {
+            if hasData {
+                Button {
+                    showWeakTopics = true
+                } label: {
+                    HStack(spacing: 14) {
+                        ZStack {
+                            RoundedRectangle(cornerRadius: 14)
+                                .fill(weakCount > 0 ? Color.orange.gradient : Color.green.gradient)
+                                .frame(width: 50, height: 50)
+
+                            Image(systemName: weakCount > 0 ? "exclamationmark.triangle.fill" : "checkmark.shield.fill")
+                                .font(.title2)
+                                .foregroundColor(.white)
+                        }
+
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("Topic Strengths")
+                                .font(.subheadline)
+                                .fontWeight(.semibold)
+                                .foregroundColor(.primary)
+
+                            if weakCount > 0 {
+                                Text("\(weakCount) weak topic\(weakCount == 1 ? "" : "s") to improve")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                            } else {
+                                Text("All topics above 70% — great work!")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                            }
                         }
 
                         Spacer()

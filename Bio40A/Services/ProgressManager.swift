@@ -300,6 +300,103 @@ class ProgressManager: ObservableObject {
         overallStats.lastStudyDate = Date()
     }
 
+    // MARK: - All Due Cards (across all decks)
+
+    func allDueCards() -> [(deckId: String, card: Flashcard)] {
+        var result: [(deckId: String, card: Flashcard)] = []
+        for deck in flashcardDecks {
+            for card in deck.cards where card.repetition.isDue {
+                result.append((deckId: deck.id, card: card))
+            }
+        }
+        return result.shuffled()
+    }
+
+    // MARK: - Topic Strength / Weak Topic Detection
+
+    struct TopicStrength: Identifiable {
+        let id: String
+        let topic: String
+        let category: QuizQuestion.QuestionCategory
+        let correctCount: Int
+        let totalCount: Int
+        var percentage: Double {
+            guard totalCount > 0 else { return 0 }
+            return Double(correctCount) / Double(totalCount) * 100
+        }
+        var isWeak: Bool { percentage < 70 }
+    }
+
+    var topicStrengths: [TopicStrength] {
+        let allQuizzes = CourseContent.quizzes + CourseContent.practiceExams
+
+        // For each quiz attempt, walk through answers and tally per-category
+        var correctByCategory: [QuizQuestion.QuestionCategory: Int] = [:]
+        var totalByCategory: [QuizQuestion.QuestionCategory: Int] = [:]
+
+        for attempt in quizAttempts {
+            guard let quiz = allQuizzes.first(where: { $0.id == attempt.quizId }) else { continue }
+            for (index, question) in quiz.questions.enumerated() {
+                guard index < attempt.answers.count else { continue }
+                let cat = question.category
+                totalByCategory[cat, default: 0] += 1
+                if attempt.answers[index] == question.correctIndex {
+                    correctByCategory[cat, default: 0] += 1
+                }
+            }
+        }
+
+        let categoryNames: [QuizQuestion.QuestionCategory: String] = [
+            .recall: "Recall",
+            .application: "Application",
+            .analysis: "Analysis",
+            .clinical: "Clinical"
+        ]
+
+        return totalByCategory.map { cat, total in
+            TopicStrength(
+                id: cat.rawValue,
+                topic: categoryNames[cat] ?? cat.rawValue.capitalized,
+                category: cat,
+                correctCount: correctByCategory[cat] ?? 0,
+                totalCount: total
+            )
+        }.sorted { $0.percentage < $1.percentage }
+    }
+
+    var weakTopicStrengths: [TopicStrength] {
+        topicStrengths.filter { $0.isWeak }
+    }
+
+    /// Generates a quiz composed only of questions from weak categories.
+    func generateWeakTopicsQuiz() -> Quiz? {
+        let weakCategories = Set(weakTopicStrengths.map(\.category))
+        guard !weakCategories.isEmpty else { return nil }
+
+        let allQuizzes = CourseContent.quizzes + CourseContent.practiceExams
+        let questions = allQuizzes.flatMap(\.questions).filter { weakCategories.contains($0.category) }
+        guard !questions.isEmpty else { return nil }
+
+        // Deduplicate by question id
+        var seen = Set<String>()
+        var unique: [QuizQuestion] = []
+        for q in questions {
+            if !seen.contains(q.id) {
+                seen.insert(q.id)
+                unique.append(q)
+            }
+        }
+
+        return Quiz(
+            id: "weak-topics-quiz",
+            title: "Weak Topics Review",
+            weekNumber: 0,
+            lessonIds: [],
+            questions: unique.shuffled(),
+            timeLimit: nil
+        )
+    }
+
     // MARK: - Reset
 
     func resetAllProgress() {
