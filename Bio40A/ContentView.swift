@@ -12,7 +12,7 @@ struct ContentView: View {
                 }
                 .tag(0)
 
-            AssignmentListView()
+            AssignmentListView(embedded: true)
                 .tabItem {
                     Label("Due Dates", systemImage: "calendar.badge.clock")
                 }

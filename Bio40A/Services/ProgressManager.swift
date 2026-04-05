@@ -94,7 +94,7 @@ class ProgressManager: ObservableObject {
 
     /// Returns all wrong answers across all quiz attempts, using the most recent attempt per quiz.
     var wrongAnswers: [WrongAnswer] {
-        let allQuizzes = CourseContent.quizzes
+        let allQuizzes = CourseContent.quizzes + CourseContent.practiceExams
         var results: [WrongAnswer] = []
 
         // Group attempts by quizId and take the most recent for each

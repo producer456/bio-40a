@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct AssignmentListView: View {
+    var embedded: Bool = false
     @EnvironmentObject var progress: ProgressManager
     @State private var selectedFilter: AssignmentFilter = .all
 
@@ -38,14 +39,22 @@ struct AssignmentListView: View {
         }
     }
 
+    private var content: some View {
+        VStack(spacing: 0) {
+            filterBar
+            assignmentList
+        }
+        .background(Color(.systemGroupedBackground))
+        .navigationTitle("Assignments")
+    }
+
     var body: some View {
-        NavigationStack {
-            VStack(spacing: 0) {
-                filterBar
-                assignmentList
+        if embedded {
+            NavigationStack {
+                content
             }
-            .background(Color(.systemGroupedBackground))
-            .navigationTitle("Assignments")
+        } else {
+            content
         }
     }
 

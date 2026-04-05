@@ -35,7 +35,7 @@ struct FeedbackLoopView: View {
                 }
                 .pickerStyle(.segmented)
                 .padding(.horizontal)
-                .onChange(of: isPositive) { _ in
+                .onChange(of: isPositive) { oldValue, newValue in
                     animationProgress = 0
                     isAnimating = false
                 }

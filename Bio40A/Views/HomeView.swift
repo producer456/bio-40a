@@ -149,7 +149,7 @@ struct HomeView: View {
                     icon: "rectangle.on.rectangle.angled",
                     label: "Flashcards",
                     color: .orange
-                ) { selectedTab = 4 }
+                ) { selectedTab = 5 }
             }
         }
         .padding()
