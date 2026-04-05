@@ -14,6 +14,7 @@ struct QuizView: View {
     @State private var isFinished = false
     @State private var showReviewWrong = false
     @State private var startTime = Date()
+    @State private var finishedTime: TimeInterval = 0
 
     private var currentQuestion: QuizQuestion {
         quiz.questions[currentIndex]
@@ -436,7 +437,7 @@ struct QuizView: View {
     }
 
     private var timeSpentFormatted: String {
-        let elapsed = Date().timeIntervalSince(startTime)
+        let elapsed = isFinished ? finishedTime : Date().timeIntervalSince(startTime)
         let minutes = Int(elapsed) / 60
         let seconds = Int(elapsed) % 60
         return String(format: "%d:%02d", minutes, seconds)
@@ -444,6 +445,7 @@ struct QuizView: View {
 
     private func finishQuiz() {
         let elapsed = Date().timeIntervalSince(startTime)
+        finishedTime = elapsed
         let attempt = QuizAttempt(
             id: UUID().uuidString,
             quizId: quiz.id,
@@ -454,6 +456,7 @@ struct QuizView: View {
             timeSpent: elapsed
         )
         progress.recordQuizAttempt(attempt, weekNumber: quiz.weekNumber)
+        progress.addStudyTime(elapsed, weekNumber: quiz.weekNumber)
         withAnimation {
             isFinished = true
         }
@@ -468,6 +471,7 @@ struct QuizView: View {
         isFinished = false
         showReviewWrong = false
         startTime = Date()
+        finishedTime = 0
     }
 }
 

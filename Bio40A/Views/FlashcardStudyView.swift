@@ -11,6 +11,7 @@ struct FlashcardStudyView: View {
     @State private var isFlipped = false
     @State private var reviewedCount = 0
     @State private var isFinished = false
+    @State private var sessionStartTime = Date()
 
     private var deck: FlashcardDeck? {
         progress.flashcardDecks.first(where: { $0.id == deckId })
@@ -315,6 +316,11 @@ struct FlashcardStudyView: View {
                 isFlipped = false
             }
         } else {
+            // Track study time
+            let elapsed = Date().timeIntervalSince(sessionStartTime)
+            if elapsed > 5, let weekNum = deck?.weekNumber {
+                progress.addStudyTime(elapsed, weekNumber: weekNum)
+            }
             withAnimation {
                 isFinished = true
             }

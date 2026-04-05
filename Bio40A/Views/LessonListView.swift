@@ -3,8 +3,7 @@ import SwiftUI
 struct LessonListView: View {
     @EnvironmentObject var progress: ProgressManager
 
-    // Sample lessons — replace with CourseContent.allLessons when available
-    @State private var lessons: [Lesson] = []
+    private var lessons: [Lesson] { CourseContent.lessons }
 
     private var lessonsByWeek: [Int: [Lesson]] {
         Dictionary(grouping: lessons, by: \.weekNumber)

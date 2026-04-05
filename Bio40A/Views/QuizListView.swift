@@ -3,8 +3,7 @@ import SwiftUI
 struct QuizListView: View {
     @EnvironmentObject var progress: ProgressManager
 
-    // Sample quizzes — replace with CourseContent.allQuizzes when available
-    @State private var quizzes: [Quiz] = []
+    private var quizzes: [Quiz] { CourseContent.quizzes }
 
     var body: some View {
         NavigationStack {

@@ -2,6 +2,7 @@ import SwiftUI
 
 struct HomeView: View {
     @EnvironmentObject var progress: ProgressManager
+    @Binding var selectedTab: Int
 
     var body: some View {
         NavigationStack {
@@ -113,19 +114,19 @@ struct HomeView: View {
                     icon: "book.fill",
                     label: "Start Lesson",
                     color: .blue
-                )
+                ) { selectedTab = 1 }
 
                 QuickActionButton(
                     icon: "checkmark.circle.fill",
                     label: "Take Quiz",
                     color: .green
-                )
+                ) { selectedTab = 2 }
 
                 QuickActionButton(
                     icon: "rectangle.on.rectangle.angled",
                     label: "Flashcards",
                     color: .orange
-                )
+                ) { selectedTab = 3 }
             }
         }
         .padding()
@@ -246,25 +247,28 @@ struct QuickActionButton: View {
     let icon: String
     let label: String
     let color: Color
+    let action: () -> Void
 
     var body: some View {
-        VStack(spacing: 8) {
-            Image(systemName: icon)
-                .font(.title2)
-                .foregroundColor(.white)
-                .frame(width: 50, height: 50)
-                .background(
-                    RoundedRectangle(cornerRadius: 14)
-                        .fill(color.gradient)
-                )
+        Button(action: action) {
+            VStack(spacing: 8) {
+                Image(systemName: icon)
+                    .font(.title2)
+                    .foregroundColor(.white)
+                    .frame(width: 50, height: 50)
+                    .background(
+                        RoundedRectangle(cornerRadius: 14)
+                            .fill(color.gradient)
+                    )
 
-            Text(label)
-                .font(.caption)
-                .fontWeight(.medium)
-                .foregroundColor(.primary)
-                .multilineTextAlignment(.center)
+                Text(label)
+                    .font(.caption)
+                    .fontWeight(.medium)
+                    .foregroundColor(.primary)
+                    .multilineTextAlignment(.center)
+            }
+            .frame(maxWidth: .infinity)
         }
-        .frame(maxWidth: .infinity)
     }
 }
 
@@ -301,6 +305,6 @@ struct OverallStatRow: View {
 }
 
 #Preview {
-    HomeView()
+    HomeView(selectedTab: .constant(0))
         .environmentObject(ProgressManager())
 }

@@ -49,9 +49,20 @@ class ProgressManager: ObservableObject {
         let totalScore = quizAttempts.reduce(0.0) { $0 + $1.percentage }
         overallStats.averageQuizScore = totalScore / Double(quizAttempts.count)
 
-        // Update week progress
+        // Update week progress — keep best score
         if let idx = weekProgress.firstIndex(where: { $0.weekNumber == weekNumber }) {
-            weekProgress[idx].quizScores[attempt.quizId] = attempt.percentage
+            let existing = weekProgress[idx].quizScores[attempt.quizId] ?? 0
+            weekProgress[idx].quizScores[attempt.quizId] = max(existing, attempt.percentage)
+        } else {
+            let wp = WeekProgress(
+                id: UUID().uuidString,
+                weekNumber: weekNumber,
+                lessonsCompleted: [],
+                quizScores: [attempt.quizId: attempt.percentage],
+                flashcardsReviewed: 0,
+                studyTimeSeconds: 0
+            )
+            weekProgress.append(wp)
         }
 
         updateStreak()
@@ -71,6 +82,16 @@ class ProgressManager: ObservableObject {
         overallStats.totalStudyTime += seconds
         if let idx = weekProgress.firstIndex(where: { $0.weekNumber == weekNumber }) {
             weekProgress[idx].studyTimeSeconds += seconds
+        } else {
+            let wp = WeekProgress(
+                id: UUID().uuidString,
+                weekNumber: weekNumber,
+                lessonsCompleted: [],
+                quizScores: [:],
+                flashcardsReviewed: 0,
+                studyTimeSeconds: seconds
+            )
+            weekProgress.append(wp)
         }
         save()
     }
@@ -109,6 +130,23 @@ class ProgressManager: ObservableObject {
         flashcardDecks[deckIdx].cards[cardIdx] = card
 
         overallStats.totalFlashcardsReviewed += 1
+
+        // Track per-week flashcard reviews
+        let weekNum = flashcardDecks[deckIdx].weekNumber
+        if let wpIdx = weekProgress.firstIndex(where: { $0.weekNumber == weekNum }) {
+            weekProgress[wpIdx].flashcardsReviewed += 1
+        } else {
+            let wp = WeekProgress(
+                id: UUID().uuidString,
+                weekNumber: weekNum,
+                lessonsCompleted: [],
+                quizScores: [:],
+                flashcardsReviewed: 1,
+                studyTimeSeconds: 0
+            )
+            weekProgress.append(wp)
+        }
+
         updateStreak()
         save()
     }
