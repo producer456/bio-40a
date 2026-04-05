@@ -8,6 +8,7 @@ class ProgressManager: ObservableObject {
     @Published var flashcardDecks: [FlashcardDeck] = []
     @Published var bookmarkedSections: [String] = []
     @Published var notes: [String: String] = [:]
+    @Published var completedAssignments: [String] = []
 
     private let saveKey = "bio40a_progress"
 
@@ -266,6 +267,21 @@ class ProgressManager: ObservableObject {
         notes[lessonId] ?? ""
     }
 
+    // MARK: - Assignments
+
+    func toggleAssignment(_ id: String) {
+        if let idx = completedAssignments.firstIndex(of: id) {
+            completedAssignments.remove(at: idx)
+        } else {
+            completedAssignments.append(id)
+        }
+        save()
+    }
+
+    func isAssignmentComplete(_ id: String) -> Bool {
+        completedAssignments.contains(id)
+    }
+
     // MARK: - Streak
 
     private func updateStreak() {
@@ -284,6 +300,20 @@ class ProgressManager: ObservableObject {
         overallStats.lastStudyDate = Date()
     }
 
+    // MARK: - Reset
+
+    func resetAllProgress() {
+        weekProgress = []
+        quizAttempts = []
+        overallStats = OverallStats()
+        flashcardDecks = []
+        bookmarkedSections = []
+        notes = [:]
+        completedAssignments = []
+        loadDefaultContent()
+        save()
+    }
+
     // MARK: - Persistence
 
     private func save() {
@@ -293,7 +323,8 @@ class ProgressManager: ObservableObject {
             overallStats: overallStats,
             flashcardDecks: flashcardDecks,
             bookmarkedSections: bookmarkedSections,
-            notes: notes
+            notes: notes,
+            completedAssignments: completedAssignments
         )
         if let encoded = try? JSONEncoder().encode(data) {
             UserDefaults.standard.set(encoded, forKey: saveKey)
@@ -314,6 +345,7 @@ class ProgressManager: ObservableObject {
         flashcardDecks = decoded.flashcardDecks
         bookmarkedSections = decoded.bookmarkedSections
         notes = decoded.notes
+        completedAssignments = decoded.completedAssignments
     }
 
     func loadDefaultContent() {
@@ -327,5 +359,6 @@ class ProgressManager: ObservableObject {
         let flashcardDecks: [FlashcardDeck]
         var bookmarkedSections: [String] = []
         var notes: [String: String] = [:]
+        var completedAssignments: [String] = []
     }
 }

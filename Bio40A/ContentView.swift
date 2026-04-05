@@ -12,35 +12,47 @@ struct ContentView: View {
                 }
                 .tag(0)
 
+            AssignmentListView()
+                .tabItem {
+                    Label("Due Dates", systemImage: "calendar.badge.clock")
+                }
+                .tag(1)
+
             LessonListView()
                 .tabItem {
                     Label("Lessons", systemImage: "book.fill")
                 }
-                .tag(1)
+                .tag(2)
 
             QuizListView()
                 .tabItem {
                     Label("Quizzes", systemImage: "checkmark.circle.fill")
                 }
-                .tag(2)
+                .tag(3)
+
+            DiagramsView()
+                .tabItem {
+                    Label("Diagrams", systemImage: "figure.stand")
+                }
+                .tag(4)
 
             FlashcardDeckListView()
                 .tabItem {
                     Label("Flashcards", systemImage: "rectangle.on.rectangle.angled")
                 }
-                .tag(3)
+                .tag(5)
 
             BookmarksView()
                 .tabItem {
                     Label("Bookmarks", systemImage: "star.fill")
                 }
-                .tag(4)
+                .tag(6)
 
             StudyProgressView()
                 .tabItem {
                     Label("Progress", systemImage: "chart.bar.fill")
                 }
-                .tag(5)
+                .tag(7)
         }
         .accentColor(.blue)
     }

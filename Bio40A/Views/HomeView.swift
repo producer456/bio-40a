@@ -2,14 +2,17 @@ import SwiftUI
 
 struct HomeView: View {
     @EnvironmentObject var progress: ProgressManager
+    @EnvironmentObject var notificationManager: NotificationManager
     @Binding var selectedTab: Int
     @State private var showWrongAnswers = false
+    @State private var showSettings = false
 
     var body: some View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 20) {
                     welcomeSection
+                    DueSoonSection()
                     weekProgressSection
                     quickActionsSection
                     wrongAnswersSection
@@ -19,6 +22,21 @@ struct HomeView: View {
             }
             .background(Color(.systemGroupedBackground))
             .navigationTitle("Bio 40A")
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button {
+                        showSettings = true
+                    } label: {
+                        Image(systemName: "gearshape.fill")
+                            .foregroundColor(.blue)
+                    }
+                }
+            }
+            .sheet(isPresented: $showSettings) {
+                SettingsView()
+                    .environmentObject(progress)
+                    .environmentObject(notificationManager)
+            }
             .navigationDestination(isPresented: $showWrongAnswers) {
                 WrongAnswersView()
             }
@@ -119,19 +137,19 @@ struct HomeView: View {
                     icon: "book.fill",
                     label: "Start Lesson",
                     color: .blue
-                ) { selectedTab = 1 }
+                ) { selectedTab = 2 }
 
                 QuickActionButton(
                     icon: "checkmark.circle.fill",
                     label: "Take Quiz",
                     color: .green
-                ) { selectedTab = 2 }
+                ) { selectedTab = 3 }
 
                 QuickActionButton(
                     icon: "rectangle.on.rectangle.angled",
                     label: "Flashcards",
                     color: .orange
-                ) { selectedTab = 3 }
+                ) { selectedTab = 4 }
             }
         }
         .padding()
@@ -361,4 +379,5 @@ struct OverallStatRow: View {
 #Preview {
     HomeView(selectedTab: .constant(0))
         .environmentObject(ProgressManager())
+        .environmentObject(NotificationManager())
 }
