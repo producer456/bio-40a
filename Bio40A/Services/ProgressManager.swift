@@ -6,6 +6,8 @@ class ProgressManager: ObservableObject {
     @Published var quizAttempts: [QuizAttempt] = []
     @Published var overallStats = OverallStats()
     @Published var flashcardDecks: [FlashcardDeck] = []
+    @Published var bookmarkedSections: [String] = []
+    @Published var notes: [String: String] = [:]
 
     private let saveKey = "bio40a_progress"
 
@@ -74,6 +76,84 @@ class ProgressManager: ObservableObject {
             .filter { $0.quizId == quizId }
             .map(\.percentage)
             .max()
+    }
+
+    // MARK: - Wrong Answers
+
+    struct WrongAnswer: Identifiable {
+        let id: String  // unique per occurrence
+        let question: QuizQuestion
+        let userAnswerIndex: Int
+        let userAnswerText: String
+        let correctAnswerText: String
+        let quizTitle: String
+        let quizId: String
+        let attemptDate: Date
+    }
+
+    /// Returns all wrong answers across all quiz attempts, using the most recent attempt per quiz.
+    var wrongAnswers: [WrongAnswer] {
+        let allQuizzes = CourseContent.quizzes
+        var results: [WrongAnswer] = []
+
+        // Group attempts by quizId and take the most recent for each
+        let grouped = Dictionary(grouping: quizAttempts, by: \.quizId)
+
+        for (quizId, attempts) in grouped {
+            guard let latestAttempt = attempts.sorted(by: { $0.date < $1.date }).last,
+                  let quiz = allQuizzes.first(where: { $0.id == quizId })
+            else { continue }
+
+            for (index, question) in quiz.questions.enumerated() {
+                guard index < latestAttempt.answers.count else { continue }
+                let userIndex = latestAttempt.answers[index]
+                if userIndex != question.correctIndex {
+                    let wa = WrongAnswer(
+                        id: "\(latestAttempt.id)-\(index)",
+                        question: question,
+                        userAnswerIndex: userIndex,
+                        userAnswerText: userIndex < question.choices.count ? question.choices[userIndex] : "Unknown",
+                        correctAnswerText: question.choices[question.correctIndex],
+                        quizTitle: quiz.title,
+                        quizId: quiz.id,
+                        attemptDate: latestAttempt.date
+                    )
+                    results.append(wa)
+                }
+            }
+        }
+
+        return results.sorted { $0.attemptDate > $1.attemptDate }
+    }
+
+    /// Groups wrong answers by question category.
+    var wrongAnswersByCategory: [QuizQuestion.QuestionCategory: [WrongAnswer]] {
+        Dictionary(grouping: wrongAnswers, by: { $0.question.category })
+    }
+
+    /// Generates a Quiz from the user's wrong answers for retry practice.
+    func generateWrongAnswersQuiz() -> Quiz? {
+        let wrongs = wrongAnswers
+        guard !wrongs.isEmpty else { return nil }
+
+        // Deduplicate by question ID (same question could appear from different quizzes theoretically)
+        var seen = Set<String>()
+        var uniqueQuestions: [QuizQuestion] = []
+        for wa in wrongs {
+            if !seen.contains(wa.question.id) {
+                seen.insert(wa.question.id)
+                uniqueQuestions.append(wa.question)
+            }
+        }
+
+        return Quiz(
+            id: "wrong-answers-retry",
+            title: "Retry Wrong Questions",
+            weekNumber: 0,
+            lessonIds: [],
+            questions: uniqueQuestions,
+            timeLimit: nil
+        )
     }
 
     // MARK: - Study Time
@@ -156,6 +236,36 @@ class ProgressManager: ObservableObject {
         return deck.cards.filter { $0.repetition.isDue }
     }
 
+    // MARK: - Bookmarks
+
+    func toggleBookmark(_ sectionId: String) {
+        if let idx = bookmarkedSections.firstIndex(of: sectionId) {
+            bookmarkedSections.remove(at: idx)
+        } else {
+            bookmarkedSections.append(sectionId)
+        }
+        save()
+    }
+
+    func isBookmarked(_ sectionId: String) -> Bool {
+        bookmarkedSections.contains(sectionId)
+    }
+
+    // MARK: - Notes
+
+    func saveNote(for lessonId: String, text: String) {
+        if text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            notes.removeValue(forKey: lessonId)
+        } else {
+            notes[lessonId] = text
+        }
+        save()
+    }
+
+    func note(for lessonId: String) -> String {
+        notes[lessonId] ?? ""
+    }
+
     // MARK: - Streak
 
     private func updateStreak() {
@@ -181,7 +291,9 @@ class ProgressManager: ObservableObject {
             weekProgress: weekProgress,
             quizAttempts: quizAttempts,
             overallStats: overallStats,
-            flashcardDecks: flashcardDecks
+            flashcardDecks: flashcardDecks,
+            bookmarkedSections: bookmarkedSections,
+            notes: notes
         )
         if let encoded = try? JSONEncoder().encode(data) {
             UserDefaults.standard.set(encoded, forKey: saveKey)
@@ -200,6 +312,8 @@ class ProgressManager: ObservableObject {
         quizAttempts = decoded.quizAttempts
         overallStats = decoded.overallStats
         flashcardDecks = decoded.flashcardDecks
+        bookmarkedSections = decoded.bookmarkedSections
+        notes = decoded.notes
     }
 
     func loadDefaultContent() {
@@ -211,5 +325,7 @@ class ProgressManager: ObservableObject {
         let quizAttempts: [QuizAttempt]
         let overallStats: OverallStats
         let flashcardDecks: [FlashcardDeck]
+        var bookmarkedSections: [String] = []
+        var notes: [String: String] = [:]
     }
 }

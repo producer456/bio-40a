@@ -30,11 +30,17 @@ struct ContentView: View {
                 }
                 .tag(3)
 
+            BookmarksView()
+                .tabItem {
+                    Label("Bookmarks", systemImage: "star.fill")
+                }
+                .tag(4)
+
             StudyProgressView()
                 .tabItem {
                     Label("Progress", systemImage: "chart.bar.fill")
                 }
-                .tag(4)
+                .tag(5)
         }
         .accentColor(.blue)
     }

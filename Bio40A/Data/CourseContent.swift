@@ -14,6 +14,9 @@ struct CourseContent {
     // MARK: - All Quizzes
     static let quizzes: [Quiz] = [quizWeek1, quizWeek2]
 
+    // MARK: - Practice Exams
+    static let practiceExams: [Quiz] = [practiceMidterm1]
+
     // MARK: - All Flashcard Decks
     static let flashcardDecks: [FlashcardDeck] = [
         deckDirectionalTerms,
@@ -1256,5 +1259,261 @@ struct CourseContent {
             Flashcard(id: "fc-m14", front: "ATP (Adenosine Triphosphate)", back: "The cell's energy currency. Adenine + ribose + 3 phosphate groups. ATP -> ADP + Pi + energy (hydrolysis). Regenerated in mitochondria via cellular respiration.", hint: nil, repetition: defaultSR),
             Flashcard(id: "fc-m15", front: "Acidosis vs Alkalosis", back: "Acidosis: blood pH < 7.35 (too acidic). Alkalosis: blood pH > 7.45 (too basic). Both are dangerous. DKA causes metabolic acidosis; hyperventilation causes respiratory alkalosis.", hint: "Normal blood pH: 7.35-7.45", repetition: defaultSR)
         ]
+    )
+
+    // =========================================================================
+    // MARK: - PRACTICE EXAM: Practice Midterm 1 (50 Questions, Timed)
+    // =========================================================================
+
+    static let practiceMidterm1 = Quiz(
+        id: "practice-midterm-1",
+        title: "Practice Midterm 1",
+        weekNumber: 0,
+        lessonIds: ["lesson-1", "lesson-2", "lesson-3", "lesson-4"],
+        questions:
+            quizWeek1.questions + quizWeek2.questions + [
+                // ===== 15 NEW QUESTIONS =====
+
+                // PE-01: Homeostasis example — Easy / Application
+                QuizQuestion(
+                    id: "pe-01",
+                    question: "After eating a salty meal, you feel thirsty and drink water. Your kidneys then excrete the excess salt and water to restore normal blood osmolarity. This is an example of:",
+                    choices: [
+                        "Positive feedback",
+                        "Negative feedback",
+                        "Anabolism",
+                        "Decomposition reaction"
+                    ],
+                    correctIndex: 1,
+                    explanation: "This is negative feedback: the body detects an increase in blood osmolarity (the stimulus) and responds by triggering thirst and renal excretion to return osmolarity to normal (opposing the change).",
+                    difficulty: .easy,
+                    category: .application
+                ),
+
+                // PE-02: Body cavity contents — Medium / Recall
+                QuizQuestion(
+                    id: "pe-02",
+                    question: "Which of the following organs is located in the pelvic cavity?",
+                    choices: [
+                        "Stomach",
+                        "Liver",
+                        "Urinary bladder",
+                        "Spleen"
+                    ],
+                    correctIndex: 2,
+                    explanation: "The pelvic cavity contains the urinary bladder, reproductive organs, and rectum. The stomach, liver, and spleen are in the abdominal cavity.",
+                    difficulty: .medium,
+                    category: .recall
+                ),
+
+                // PE-03: pH calculation — Medium / Application
+                QuizQuestion(
+                    id: "pe-03",
+                    question: "A solution has a pH of 2. Compared to a solution with a pH of 6, the first solution has:",
+                    choices: [
+                        "4 times more H+ ions",
+                        "4 times fewer H+ ions",
+                        "10,000 times more H+ ions",
+                        "10,000 times fewer H+ ions"
+                    ],
+                    correctIndex: 2,
+                    explanation: "The pH scale is logarithmic: each unit = 10-fold change in H+ concentration. A difference of 4 pH units = 10^4 = 10,000 times more H+ (lower pH = more H+).",
+                    difficulty: .medium,
+                    category: .application
+                ),
+
+                // PE-04: Protein structure levels — Medium / Analysis
+                QuizQuestion(
+                    id: "pe-04",
+                    question: "Alpha-helices and beta-pleated sheets are examples of which level of protein structure?",
+                    choices: [
+                        "Primary structure",
+                        "Secondary structure",
+                        "Tertiary structure",
+                        "Quaternary structure"
+                    ],
+                    correctIndex: 1,
+                    explanation: "Secondary structure refers to local folding patterns (alpha-helices and beta-pleated sheets) stabilized by hydrogen bonds between the backbone atoms of the polypeptide chain.",
+                    difficulty: .medium,
+                    category: .analysis
+                ),
+
+                // PE-05: Enzyme function — Medium / Application
+                QuizQuestion(
+                    id: "pe-05",
+                    question: "The enzyme lactase breaks down lactose but has no effect on sucrose or maltose. This demonstrates that enzymes are:",
+                    choices: [
+                        "Consumed during the reaction",
+                        "Nonspecific catalysts",
+                        "Highly specific to their substrates",
+                        "Only active at high temperatures"
+                    ],
+                    correctIndex: 2,
+                    explanation: "Enzymes are highly specific: each enzyme catalyzes only one type of reaction with a specific substrate. Lactase only fits lactose at its active site (induced-fit model).",
+                    difficulty: .medium,
+                    category: .application
+                ),
+
+                // PE-06: Anatomical position scenario — Hard / Clinical
+                QuizQuestion(
+                    id: "pe-06",
+                    question: "A patient is lying supine. The EMT notes a bruise on the posterior aspect of the right thigh, proximal to the knee. Where is the bruise?",
+                    choices: [
+                        "Front of the right thigh, near the hip",
+                        "Back of the right thigh, near the hip",
+                        "Front of the right thigh, near the knee",
+                        "Back of the right thigh, near the knee"
+                    ],
+                    correctIndex: 1,
+                    explanation: "Posterior = back surface; proximal to the knee = closer to the trunk (toward the hip). So the bruise is on the back of the right thigh, in the upper portion near the hip.",
+                    difficulty: .hard,
+                    category: .clinical
+                ),
+
+                // PE-07: Homeostasis — shivering — Easy / Application
+                QuizQuestion(
+                    id: "pe-07",
+                    question: "On a cold day, your body shivers to generate heat and your blood vessels constrict to reduce heat loss. The hypothalamus, which detects the temperature drop and initiates these responses, is acting as the:",
+                    choices: [
+                        "Receptor (sensor)",
+                        "Effector",
+                        "Control center",
+                        "Set point"
+                    ],
+                    correctIndex: 2,
+                    explanation: "The hypothalamus acts as the control center in thermoregulation: it receives input from temperature receptors and directs effectors (muscles for shivering, blood vessels for vasoconstriction) to restore the set point.",
+                    difficulty: .easy,
+                    category: .application
+                ),
+
+                // PE-08: Body cavity — dorsal cavity — Easy / Recall
+                QuizQuestion(
+                    id: "pe-08",
+                    question: "The cranial cavity and the vertebral (spinal) cavity together make up the:",
+                    choices: [
+                        "Ventral cavity",
+                        "Dorsal cavity",
+                        "Thoracic cavity",
+                        "Abdominopelvic cavity"
+                    ],
+                    correctIndex: 1,
+                    explanation: "The dorsal (posterior) cavity consists of the cranial cavity (housing the brain) and the vertebral/spinal cavity (housing the spinal cord).",
+                    difficulty: .easy,
+                    category: .recall
+                ),
+
+                // PE-09: pH and buffers — Hard / Analysis
+                QuizQuestion(
+                    id: "pe-09",
+                    question: "A patient's blood pH drops to 7.30. The bicarbonate buffer system responds by having HCO3- ions combine with excess H+. What is the immediate product of this buffering reaction?",
+                    choices: [
+                        "NaOH (sodium hydroxide)",
+                        "H2CO3 (carbonic acid)",
+                        "HCl (hydrochloric acid)",
+                        "CO2 only"
+                    ],
+                    correctIndex: 1,
+                    explanation: "When blood becomes too acidic, bicarbonate ions (HCO3-) accept excess H+ to form carbonic acid (H2CO3). Carbonic acid then breaks down into CO2 + H2O, with CO2 exhaled by the lungs.",
+                    difficulty: .hard,
+                    category: .analysis
+                ),
+
+                // PE-10: Protein structure — quaternary — Hard / Analysis
+                QuizQuestion(
+                    id: "pe-10",
+                    question: "Hemoglobin consists of four polypeptide subunits (two alpha and two beta chains) working together. This is an example of which level of protein structure?",
+                    choices: [
+                        "Primary structure",
+                        "Secondary structure",
+                        "Tertiary structure",
+                        "Quaternary structure"
+                    ],
+                    correctIndex: 3,
+                    explanation: "Quaternary structure describes the arrangement of multiple polypeptide subunits into a functional protein complex. Hemoglobin's four subunits are the classic example.",
+                    difficulty: .hard,
+                    category: .analysis
+                ),
+
+                // PE-11: Enzyme — denaturation scenario — Medium / Clinical
+                QuizQuestion(
+                    id: "pe-11",
+                    question: "A patient with a high fever of 41.5 degrees C (106.7 degrees F) is at risk of organ damage. At the cellular level, the primary danger of sustained high fever is:",
+                    choices: [
+                        "Increased production of ATP",
+                        "Denaturation of enzymes, disrupting cellular reactions",
+                        "Conversion of all proteins to lipids",
+                        "Excessive hydrolysis of DNA"
+                    ],
+                    correctIndex: 1,
+                    explanation: "Extreme heat denatures enzymes by disrupting the bonds that maintain their 3D shape. Without functional enzymes, metabolic reactions cannot proceed, leading to organ damage and potentially death.",
+                    difficulty: .medium,
+                    category: .clinical
+                ),
+
+                // PE-12: Anatomical position — medial/lateral — Medium / Application
+                QuizQuestion(
+                    id: "pe-12",
+                    question: "In anatomical position, the thumb is on the _______ side of the hand, and the great toe (big toe) is on the _______ side of the foot.",
+                    choices: [
+                        "Medial; lateral",
+                        "Lateral; medial",
+                        "Anterior; posterior",
+                        "Superior; inferior"
+                    ],
+                    correctIndex: 1,
+                    explanation: "In anatomical position (palms forward), the thumb is lateral (away from midline) and the great toe is medial (toward the midline of the body).",
+                    difficulty: .medium,
+                    category: .application
+                ),
+
+                // PE-13: Homeostasis — blood clotting — Medium / Application
+                QuizQuestion(
+                    id: "pe-13",
+                    question: "When a blood vessel is cut, platelets arrive and release chemicals that attract MORE platelets, rapidly building a clot. What stops this positive feedback loop?",
+                    choices: [
+                        "Negative feedback from the hypothalamus",
+                        "The vessel is sealed and the external stimulus (damage) is removed",
+                        "Insulin is released to inhibit clotting",
+                        "The loop never stops; it continues indefinitely"
+                    ],
+                    correctIndex: 1,
+                    explanation: "Positive feedback loops require an external event to break the cycle. In blood clotting, once the vessel is sealed and the damaged tissue is repaired, the stimulus for further platelet aggregation is removed.",
+                    difficulty: .medium,
+                    category: .application
+                ),
+
+                // PE-14: Body cavity — serous membranes — Hard / Recall
+                QuizQuestion(
+                    id: "pe-14",
+                    question: "A patient has fluid accumulation around the lungs (pleural effusion). The fluid is collecting between the layers of which serous membrane?",
+                    choices: [
+                        "Pericardium",
+                        "Peritoneum",
+                        "Pleura",
+                        "Meninges"
+                    ],
+                    correctIndex: 2,
+                    explanation: "The pleura is the serous membrane surrounding each lung. Pleural effusion is excess fluid between the visceral and parietal pleural layers. The pericardium surrounds the heart; the peritoneum lines the abdominal cavity.",
+                    difficulty: .hard,
+                    category: .recall
+                ),
+
+                // PE-15: Enzyme and substrate — induced fit — Hard / Analysis
+                QuizQuestion(
+                    id: "pe-15",
+                    question: "According to the induced-fit model, when a substrate binds to an enzyme's active site:",
+                    choices: [
+                        "The substrate permanently changes the enzyme into a new molecule",
+                        "The enzyme slightly changes shape to better fit the substrate, facilitating catalysis",
+                        "The enzyme is consumed and must be replaced by a new enzyme molecule",
+                        "The active site remains completely rigid and the substrate must match it exactly"
+                    ],
+                    correctIndex: 1,
+                    explanation: "The induced-fit model states that the enzyme's active site is not perfectly rigid. When the substrate binds, the active site changes shape slightly to achieve optimal fit, which facilitates catalysis. The enzyme is not consumed and returns to its original shape afterward.",
+                    difficulty: .hard,
+                    category: .analysis
+                )
+            ],
+        timeLimit: 6600  // 1 hour 50 minutes = 110 minutes = 6600 seconds
     )
 }

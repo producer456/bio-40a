@@ -3,6 +3,7 @@ import SwiftUI
 struct HomeView: View {
     @EnvironmentObject var progress: ProgressManager
     @Binding var selectedTab: Int
+    @State private var showWrongAnswers = false
 
     var body: some View {
         NavigationStack {
@@ -11,12 +12,16 @@ struct HomeView: View {
                     welcomeSection
                     weekProgressSection
                     quickActionsSection
+                    wrongAnswersSection
                     overallStatsSection
                 }
                 .padding()
             }
             .background(Color(.systemGroupedBackground))
             .navigationTitle("Bio 40A")
+            .navigationDestination(isPresented: $showWrongAnswers) {
+                WrongAnswersView()
+            }
         }
     }
 
@@ -135,6 +140,55 @@ struct HomeView: View {
                 .fill(Color(.systemBackground))
                 .shadow(color: .black.opacity(0.05), radius: 8, y: 2)
         )
+    }
+
+    // MARK: - Wrong Answers
+
+    private var wrongAnswersSection: some View {
+        let wrongCount = progress.wrongAnswers.count
+
+        return Group {
+            if wrongCount > 0 {
+                Button {
+                    showWrongAnswers = true
+                } label: {
+                    HStack(spacing: 14) {
+                        ZStack {
+                            RoundedRectangle(cornerRadius: 14)
+                                .fill(Color.red.gradient)
+                                .frame(width: 50, height: 50)
+
+                            Image(systemName: "xmark.circle.fill")
+                                .font(.title2)
+                                .foregroundColor(.white)
+                        }
+
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("Wrong Answers")
+                                .font(.subheadline)
+                                .fontWeight(.semibold)
+                                .foregroundColor(.primary)
+
+                            Text("\(wrongCount) question\(wrongCount == 1 ? "" : "s") to review")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
+
+                        Spacer()
+
+                        Image(systemName: "chevron.right")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
+                    .padding()
+                    .background(
+                        RoundedRectangle(cornerRadius: 16)
+                            .fill(Color(.systemBackground))
+                            .shadow(color: .black.opacity(0.05), radius: 8, y: 2)
+                    )
+                }
+            }
+        }
     }
 
     // MARK: - Overall Stats

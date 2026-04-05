@@ -7,6 +7,7 @@ struct LessonDetailView: View {
 
     @State private var readingStartTime = Date()
     @State private var showCompletionAlert = false
+    @State private var noteText = ""
 
     private var isComplete: Bool {
         progress.isLessonComplete(lesson.id)
@@ -20,6 +21,7 @@ struct LessonDetailView: View {
                 if let clinical = lesson.clinicalApplication {
                     clinicalApplicationCard(clinical)
                 }
+                notesSection
                 markCompleteButton
             }
             .padding()
@@ -27,8 +29,12 @@ struct LessonDetailView: View {
         .background(Color(.systemGroupedBackground))
         .navigationTitle(lesson.title)
         .navigationBarTitleDisplayMode(.inline)
+        .onAppear {
+            noteText = progress.note(for: lesson.id)
+        }
         .onDisappear {
             trackReadingTime()
+            progress.saveNote(for: lesson.id, text: noteText)
         }
         .alert("Lesson Complete!", isPresented: $showCompletionAlert) {
             Button("OK", role: .cancel) { }
@@ -93,11 +99,24 @@ struct LessonDetailView: View {
     private var sectionsContent: some View {
         ForEach(lesson.sections) { section in
             VStack(alignment: .leading, spacing: 14) {
-                // Section heading
-                Text(section.heading)
-                    .font(.title3)
-                    .fontWeight(.bold)
-                    .foregroundColor(.blue)
+                // Section heading with bookmark button
+                HStack {
+                    Text(section.heading)
+                        .font(.title3)
+                        .fontWeight(.bold)
+                        .foregroundColor(.blue)
+
+                    Spacer()
+
+                    Button {
+                        progress.toggleBookmark(section.id)
+                    } label: {
+                        Image(systemName: progress.isBookmarked(section.id) ? "star.fill" : "star")
+                            .font(.title3)
+                            .foregroundColor(progress.isBookmarked(section.id) ? .yellow : .gray.opacity(0.4))
+                    }
+                    .buttonStyle(.plain)
+                }
 
                 // Content text
                 Text(section.content)
@@ -233,6 +252,52 @@ struct LessonDetailView: View {
                     RoundedRectangle(cornerRadius: 16)
                         .stroke(Color.red.opacity(0.3), lineWidth: 2)
                 )
+                .shadow(color: .black.opacity(0.05), radius: 8, y: 2)
+        )
+    }
+
+    // MARK: - Notes Section
+
+    private var notesSection: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            HStack(spacing: 8) {
+                Image(systemName: "pencil.and.outline")
+                    .foregroundColor(.blue)
+                Text("My Notes")
+                    .font(.headline)
+                    .foregroundColor(.blue)
+            }
+
+            TextEditor(text: $noteText)
+                .font(.body)
+                .frame(minHeight: 120)
+                .padding(8)
+                .background(
+                    RoundedRectangle(cornerRadius: 10)
+                        .fill(Color(.systemGray6))
+                )
+                .overlay(
+                    Group {
+                        if noteText.isEmpty {
+                            Text("Tap to add personal notes for this lesson...")
+                                .font(.body)
+                                .foregroundColor(.secondary.opacity(0.5))
+                                .padding(.leading, 12)
+                                .padding(.top, 16)
+                                .allowsHitTesting(false)
+                        }
+                    },
+                    alignment: .topLeading
+                )
+
+            Text("Notes are saved automatically when you leave this page.")
+                .font(.caption2)
+                .foregroundColor(.secondary)
+        }
+        .padding()
+        .background(
+            RoundedRectangle(cornerRadius: 16)
+                .fill(Color(.systemBackground))
                 .shadow(color: .black.opacity(0.05), radius: 8, y: 2)
         )
     }
