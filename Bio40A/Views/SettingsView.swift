@@ -6,11 +6,13 @@ struct SettingsView: View {
 
     @State private var showResetConfirmation = false
     @State private var showResetSuccess = false
+    @State private var devUnlockAll = ContentUnlockManager.devUnlockAll
 
     var body: some View {
         NavigationStack {
             Form {
                 notificationsSection
+                contentUnlockSection
                 resourcesSection
                 dataSection
                 aboutSection
@@ -30,6 +32,41 @@ struct SettingsView: View {
             } message: {
                 Text("All progress has been reset to default.")
             }
+        }
+    }
+
+    // MARK: - Content Unlock Section
+
+    private var contentUnlockSection: some View {
+        Section {
+            Toggle(isOn: $devUnlockAll) {
+                Label("Unlock All Content (Dev Mode)", systemImage: "lock.open.fill")
+            }
+            .onChange(of: devUnlockAll) { _, newValue in
+                ContentUnlockManager.devUnlockAll = newValue
+            }
+
+            if !devUnlockAll {
+                HStack {
+                    Text("Current Week")
+                    Spacer()
+                    Text("Week \(ContentUnlockManager.currentWeek())")
+                        .foregroundColor(.secondary)
+                }
+
+                HStack {
+                    Text("Course Start")
+                    Spacer()
+                    Text("Mon, Apr 6, 2026")
+                        .foregroundColor(.secondary)
+                }
+            }
+        } header: {
+            Text("Content Schedule")
+        } footer: {
+            Text(devUnlockAll
+                 ? "All weeks are unlocked for studying ahead. Turn off to follow the course schedule."
+                 : "Content unlocks weekly according to the syllabus schedule. Enable Dev Mode to access all content.")
         }
     }
 

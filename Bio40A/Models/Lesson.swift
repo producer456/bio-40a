@@ -17,6 +17,13 @@ struct Lesson: Identifiable, Codable {
         case 2: return "Wed, Apr 8"
         case 3: return "Mon, Apr 13"
         case 4: return "Wed, Apr 15"
+        case 5: return "Mon, Apr 20"
+        case 6: return "Wed, Apr 22"
+        case 7: return "Wed, Apr 29"
+        case 8: return "Mon, May 4"
+        case 9: return "Wed, May 6"
+        case 10: return "Mon, May 11"
+        case 11: return "Wed, May 13"
         default: return ""
         }
     }

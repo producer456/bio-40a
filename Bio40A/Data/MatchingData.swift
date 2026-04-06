@@ -14,6 +14,7 @@ struct MatchingData {
         id: "directional_terms",
         title: "Directional Terms",
         category: "Anatomical Terminology",
+        weekNumber: 1,
         pairs: [
             MatchPair(id: "dt_1", term: "Anterior (Ventral)",
                       definition: "Toward the front of the body"),
@@ -40,6 +41,7 @@ struct MatchingData {
         id: "body_planes_cavities",
         title: "Body Planes & Cavities",
         category: "Anatomical Terminology",
+        weekNumber: 1,
         pairs: [
             MatchPair(id: "bp_1", term: "Sagittal Plane",
                       definition: "Divides the body into left and right portions"),
@@ -66,6 +68,7 @@ struct MatchingData {
         id: "chemical_bonds",
         title: "Chemical Bonds",
         category: "Chemistry",
+        weekNumber: 2,
         pairs: [
             MatchPair(id: "cb_1", term: "Ionic Bond",
                       definition: "Transfer of electrons between atoms; forms ions"),
@@ -88,6 +91,7 @@ struct MatchingData {
         id: "macromolecules",
         title: "Macromolecules",
         category: "Chemistry",
+        weekNumber: 2,
         pairs: [
             MatchPair(id: "mm_1", term: "Carbohydrates",
                       definition: "Provide quick energy; made of monosaccharides"),

@@ -2,6 +2,8 @@ import SwiftUI
 
 struct QuizListView: View {
     @EnvironmentObject var progress: ProgressManager
+    @State private var lockedAlertWeek: Int?
+    @State private var showLockedAlert = false
 
     private var quizzes: [Quiz] { CourseContent.quizzes }
     private var practiceExams: [Quiz] { CourseContent.practiceExams }
@@ -17,6 +19,13 @@ struct QuizListView: View {
             }
             .navigationTitle("Quizzes")
             .background(Color(.systemGroupedBackground))
+            .alert("Content Locked", isPresented: $showLockedAlert) {
+                Button("OK", role: .cancel) {}
+            } message: {
+                if let week = lockedAlertWeek {
+                    Text("This quiz unlocks in Week \(week) (\(ContentUnlockManager.unlockDateString(for: week)))")
+                }
+            }
         }
     }
 
@@ -38,7 +47,7 @@ struct QuizListView: View {
 
     private var quizList: some View {
         List {
-            // Practice Exams Section
+            // Practice Exams Section — always unlocked (weekNumber 0)
             if !practiceExams.isEmpty {
                 Section {
                     ForEach(practiceExams) { exam in
@@ -90,8 +99,19 @@ struct QuizListView: View {
 
             Section {
                 ForEach(quizzes) { quiz in
-                    NavigationLink(destination: QuizView(quiz: quiz)) {
-                        QuizRow(quiz: quiz, bestScore: progress.bestScore(for: quiz.id))
+                    let unlocked = ContentUnlockManager.isUnlocked(quiz.weekNumber)
+                    if unlocked {
+                        NavigationLink(destination: QuizView(quiz: quiz)) {
+                            QuizRow(quiz: quiz, bestScore: progress.bestScore(for: quiz.id), isLocked: false)
+                        }
+                    } else {
+                        Button {
+                            lockedAlertWeek = quiz.weekNumber
+                            showLockedAlert = true
+                        } label: {
+                            QuizRow(quiz: quiz, bestScore: nil, isLocked: true)
+                        }
+                        .buttonStyle(.plain)
                     }
                 }
             } header: {
@@ -113,16 +133,21 @@ struct QuizListView: View {
 struct QuizRow: View {
     let quiz: Quiz
     let bestScore: Double?
+    var isLocked: Bool = false
 
     var body: some View {
         HStack(spacing: 14) {
             // Score indicator
             ZStack {
                 Circle()
-                    .fill(scoreColor.opacity(0.15))
+                    .fill(isLocked ? Color.gray.opacity(0.15) : scoreColor.opacity(0.15))
                     .frame(width: 48, height: 48)
 
-                if let score = bestScore {
+                if isLocked {
+                    Image(systemName: "lock.fill")
+                        .font(.title3)
+                        .foregroundColor(.gray)
+                } else if let score = bestScore {
                     Text(String(format: "%.0f", score))
                         .font(.system(.subheadline, design: .rounded))
                         .fontWeight(.bold)
@@ -138,6 +163,7 @@ struct QuizRow: View {
                 Text(quiz.title)
                     .font(.subheadline)
                     .fontWeight(.semibold)
+                    .foregroundColor(isLocked ? .secondary : .primary)
 
                 HStack(spacing: 12) {
                     Label("\(quiz.questionCount) questions", systemImage: "list.bullet")
@@ -151,7 +177,7 @@ struct QuizRow: View {
                     }
                 }
 
-                if let score = bestScore {
+                if !isLocked, let score = bestScore {
                     HStack(spacing: 4) {
                         Image(systemName: "trophy.fill")
                             .font(.caption2)
@@ -166,11 +192,18 @@ struct QuizRow: View {
 
             Spacer()
 
-            Image(systemName: "chevron.right")
-                .font(.caption)
-                .foregroundColor(.secondary)
+            if isLocked {
+                Image(systemName: "lock.fill")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            } else {
+                Image(systemName: "chevron.right")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            }
         }
         .padding(.vertical, 6)
+        .opacity(isLocked ? 0.6 : 1.0)
     }
 
     private var scoreColor: Color {

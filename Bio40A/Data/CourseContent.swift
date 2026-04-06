@@ -9,10 +9,10 @@ struct CourseContent {
     private static let defaultSR = Flashcard.SpacedRepetitionData()
 
     // MARK: - All Lessons
-    static let lessons: [Lesson] = [lesson1, lesson2, lesson3, lesson4]
+    static let lessons: [Lesson] = [lesson1, lesson2, lesson3, lesson4] + lessonsWeeks3_4 + lessonsWeeks5_6
 
     // MARK: - All Quizzes
-    static let quizzes: [Quiz] = [quizWeek1, quizWeek2]
+    static let quizzes: [Quiz] = [quizWeek1, quizWeek2] + quizzesWeeks3_4 + quizzesWeeks5_6
 
     // MARK: - Practice Exams
     static let practiceExams: [Quiz] = [practiceMidterm1]
@@ -23,7 +23,7 @@ struct CourseContent {
         deckPlanesAndCavities,
         deckChemistryFundamentals,
         deckMacromoleculesPH
-    ]
+    ] + flashcardDecksWeeks3_4 + flashcardDecksWeeks5_6
 
     // =========================================================================
     // MARK: - LESSON 1: Body Organization & Homeostasis

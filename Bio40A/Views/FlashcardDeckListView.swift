@@ -2,6 +2,8 @@ import SwiftUI
 
 struct FlashcardDeckListView: View {
     @EnvironmentObject var progress: ProgressManager
+    @State private var lockedAlertWeek: Int?
+    @State private var showLockedAlert = false
 
     var body: some View {
         NavigationStack {
@@ -14,6 +16,13 @@ struct FlashcardDeckListView: View {
             }
             .navigationTitle("Flashcards")
             .background(Color(.systemGroupedBackground))
+            .alert("Content Locked", isPresented: $showLockedAlert) {
+                Button("OK", role: .cancel) {}
+            } message: {
+                if let week = lockedAlertWeek {
+                    Text("This flashcard deck unlocks in Week \(week) (\(ContentUnlockManager.unlockDateString(for: week)))")
+                }
+            }
         }
     }
 
@@ -37,9 +46,20 @@ struct FlashcardDeckListView: View {
         List {
             ForEach(progress.flashcardDecks) { deck in
                 let dueCount = progress.dueCards(in: deck.id).count
+                let unlocked = ContentUnlockManager.isUnlocked(deck.weekNumber)
 
-                NavigationLink(destination: FlashcardStudyView(deckId: deck.id)) {
-                    FlashcardDeckRow(deck: deck, dueCount: dueCount)
+                if unlocked {
+                    NavigationLink(destination: FlashcardStudyView(deckId: deck.id)) {
+                        FlashcardDeckRow(deck: deck, dueCount: dueCount, isLocked: false)
+                    }
+                } else {
+                    Button {
+                        lockedAlertWeek = deck.weekNumber
+                        showLockedAlert = true
+                    } label: {
+                        FlashcardDeckRow(deck: deck, dueCount: dueCount, isLocked: true)
+                    }
+                    .buttonStyle(.plain)
                 }
             }
         }
@@ -52,24 +72,26 @@ struct FlashcardDeckListView: View {
 struct FlashcardDeckRow: View {
     let deck: FlashcardDeck
     let dueCount: Int
+    var isLocked: Bool = false
 
     var body: some View {
         HStack(spacing: 14) {
             // Icon
             ZStack {
                 RoundedRectangle(cornerRadius: 12)
-                    .fill(Color.orange.opacity(0.15))
+                    .fill(isLocked ? Color.gray.opacity(0.15) : Color.orange.opacity(0.15))
                     .frame(width: 48, height: 48)
 
-                Image(systemName: "rectangle.stack.fill")
+                Image(systemName: isLocked ? "lock.fill" : "rectangle.stack.fill")
                     .font(.title3)
-                    .foregroundColor(.orange)
+                    .foregroundColor(isLocked ? .gray : .orange)
             }
 
             VStack(alignment: .leading, spacing: 4) {
                 Text(deck.title)
                     .font(.subheadline)
                     .fontWeight(.semibold)
+                    .foregroundColor(isLocked ? .secondary : .primary)
 
                 HStack(spacing: 10) {
                     Label("\(deck.cardCount) cards", systemImage: "square.stack")
@@ -79,12 +101,12 @@ struct FlashcardDeckRow: View {
                     if !deck.category.isEmpty {
                         Text(deck.category)
                             .font(.caption)
-                            .foregroundColor(.blue)
+                            .foregroundColor(isLocked ? .secondary : .blue)
                             .padding(.horizontal, 6)
                             .padding(.vertical, 2)
                             .background(
                                 Capsule()
-                                    .fill(Color.blue.opacity(0.1))
+                                    .fill(isLocked ? Color.gray.opacity(0.1) : Color.blue.opacity(0.1))
                             )
                     }
                 }
@@ -92,8 +114,12 @@ struct FlashcardDeckRow: View {
 
             Spacer()
 
-            // Due badge
-            if dueCount > 0 {
+            if isLocked {
+                Image(systemName: "lock.fill")
+                    .foregroundColor(.secondary)
+                    .font(.caption)
+            } else if dueCount > 0 {
+                // Due badge
                 Text("\(dueCount)")
                     .font(.caption)
                     .fontWeight(.bold)
@@ -110,6 +136,7 @@ struct FlashcardDeckRow: View {
             }
         }
         .padding(.vertical, 6)
+        .opacity(isLocked ? 0.6 : 1.0)
     }
 }
 

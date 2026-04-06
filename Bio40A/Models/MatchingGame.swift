@@ -4,6 +4,7 @@ struct MatchingSet: Identifiable {
     let id: String
     let title: String
     let category: String
+    let weekNumber: Int
     let pairs: [MatchPair]
 
     var pairCount: Int { pairs.count }

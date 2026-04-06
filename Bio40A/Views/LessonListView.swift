@@ -3,6 +3,8 @@ import SwiftUI
 struct LessonListView: View {
     @EnvironmentObject var progress: ProgressManager
     @State private var searchText = ""
+    @State private var lockedAlertWeek: Int?
+    @State private var showLockedAlert = false
 
     private var lessons: [Lesson] { CourseContent.lessons }
 
@@ -28,6 +30,13 @@ struct LessonListView: View {
             .navigationTitle("Lessons")
             .background(Color(.systemGroupedBackground))
             .searchable(text: $searchText, prompt: "Search lessons, terms, flashcards...")
+            .alert("Content Locked", isPresented: $showLockedAlert) {
+                Button("OK", role: .cancel) {}
+            } message: {
+                if let week = lockedAlertWeek {
+                    Text("This lesson unlocks in Week \(week) (\(ContentUnlockManager.unlockDateString(for: week)))")
+                }
+            }
         }
     }
 
@@ -52,8 +61,19 @@ struct LessonListView: View {
             ForEach(sortedWeeks, id: \.self) { week in
                 Section {
                     ForEach(lessonsByWeek[week] ?? []) { lesson in
-                        NavigationLink(destination: LessonDetailView(lesson: lesson)) {
-                            LessonRow(lesson: lesson, isComplete: progress.isLessonComplete(lesson.id))
+                        let unlocked = ContentUnlockManager.isUnlocked(lesson.weekNumber)
+                        if unlocked {
+                            NavigationLink(destination: LessonDetailView(lesson: lesson)) {
+                                LessonRow(lesson: lesson, isComplete: progress.isLessonComplete(lesson.id), isLocked: false)
+                            }
+                        } else {
+                            Button {
+                                lockedAlertWeek = lesson.weekNumber
+                                showLockedAlert = true
+                            } label: {
+                                LessonRow(lesson: lesson, isComplete: false, isLocked: true)
+                            }
+                            .buttonStyle(.plain)
                         }
                     }
                 } header: {
@@ -288,13 +308,23 @@ struct SearchResultRow: View {
 struct WeekHeader: View {
     let weekNumber: Int
 
+    private var isUnlocked: Bool {
+        ContentUnlockManager.isUnlocked(weekNumber)
+    }
+
     var body: some View {
         HStack(spacing: 8) {
-            Image(systemName: "calendar")
-                .foregroundColor(.blue)
+            Image(systemName: isUnlocked ? "calendar" : "lock.fill")
+                .foregroundColor(isUnlocked ? .blue : .secondary)
             Text("Week \(weekNumber)")
                 .font(.headline)
-                .foregroundColor(.primary)
+                .foregroundColor(isUnlocked ? .primary : .secondary)
+            if !isUnlocked {
+                Spacer()
+                Text(ContentUnlockManager.unlockDateString(for: weekNumber))
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            }
         }
         .textCase(nil)
         .padding(.vertical, 4)
@@ -306,18 +336,19 @@ struct WeekHeader: View {
 struct LessonRow: View {
     let lesson: Lesson
     let isComplete: Bool
+    var isLocked: Bool = false
 
     var body: some View {
         HStack(spacing: 14) {
             // Completion indicator
             ZStack {
                 Circle()
-                    .fill(isComplete ? Color.green : Color.blue.opacity(0.15))
+                    .fill(isLocked ? Color.gray.opacity(0.15) : (isComplete ? Color.green : Color.blue.opacity(0.15)))
                     .frame(width: 40, height: 40)
 
-                Image(systemName: isComplete ? "checkmark" : "book.fill")
+                Image(systemName: isLocked ? "lock.fill" : (isComplete ? "checkmark" : "book.fill"))
                     .font(.system(size: 16, weight: .medium))
-                    .foregroundColor(isComplete ? .white : .blue)
+                    .foregroundColor(isLocked ? .gray : (isComplete ? .white : .blue))
             }
 
             VStack(alignment: .leading, spacing: 4) {
@@ -325,6 +356,7 @@ struct LessonRow: View {
                     .font(.subheadline)
                     .fontWeight(.semibold)
                     .lineLimit(2)
+                    .foregroundColor(isLocked ? .secondary : .primary)
 
                 HStack(spacing: 8) {
                     Text(lesson.dateString)
@@ -334,12 +366,12 @@ struct LessonRow: View {
                     if !lesson.textbookChapter.isEmpty {
                         Text(lesson.textbookChapter)
                             .font(.caption)
-                            .foregroundColor(.blue)
+                            .foregroundColor(isLocked ? .secondary : .blue)
                             .padding(.horizontal, 6)
                             .padding(.vertical, 2)
                             .background(
                                 Capsule()
-                                    .fill(Color.blue.opacity(0.1))
+                                    .fill(isLocked ? Color.gray.opacity(0.1) : Color.blue.opacity(0.1))
                             )
                     }
                 }
@@ -347,12 +379,17 @@ struct LessonRow: View {
 
             Spacer()
 
-            if isComplete {
+            if isLocked {
+                Image(systemName: "lock.fill")
+                    .foregroundColor(.secondary)
+                    .font(.caption)
+            } else if isComplete {
                 Image(systemName: "checkmark.seal.fill")
                     .foregroundColor(.green)
             }
         }
         .padding(.vertical, 4)
+        .opacity(isLocked ? 0.6 : 1.0)
     }
 }
 
