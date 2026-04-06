@@ -47,6 +47,57 @@ struct QuizListView: View {
 
     private var quizList: some View {
         List {
+            // Visual Quizzes Section
+            Section {
+                NavigationLink(destination: ImageQuizListView()) {
+                    HStack(spacing: 14) {
+                        ZStack {
+                            RoundedRectangle(cornerRadius: 12)
+                                .fill(
+                                    LinearGradient(
+                                        colors: [.teal, .green],
+                                        startPoint: .topLeading,
+                                        endPoint: .bottomTrailing
+                                    )
+                                )
+                                .frame(width: 48, height: 48)
+
+                            Image(systemName: "eye.circle.fill")
+                                .font(.title3)
+                                .foregroundColor(.white)
+                        }
+
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("Visual Quizzes")
+                                .font(.subheadline)
+                                .fontWeight(.bold)
+
+                            Text("Identify structures in diagrams")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
+
+                        Spacer()
+
+                        Text("\(ImageQuizData.allQuestions.count) questions")
+                            .font(.caption2)
+                            .foregroundColor(.teal)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 4)
+                            .background(Capsule().fill(Color.teal.opacity(0.12)))
+                    }
+                    .padding(.vertical, 6)
+                }
+                .listRowBackground(Color.clear)
+                .listRowInsets(EdgeInsets(top: 6, leading: 16, bottom: 6, trailing: 16))
+            } header: {
+                Label("Visual Learning", systemImage: "eye")
+                    .font(.subheadline)
+                    .fontWeight(.semibold)
+                    .foregroundColor(.teal)
+                    .textCase(nil)
+            }
+
             // Practice Exams Section — always unlocked (weekNumber 0)
             if !practiceExams.isEmpty {
                 Section {

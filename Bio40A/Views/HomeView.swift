@@ -8,6 +8,7 @@ struct HomeView: View {
     @State private var showSettings = false
     @State private var showQuickReview = false
     @State private var showWeakTopics = false
+    @State private var showCompare = false
 
     var body: some View {
         NavigationStack {
@@ -18,6 +19,7 @@ struct HomeView: View {
                     StudyPlanCard(selectedTab: $selectedTab)
                     weekProgressSection
                     quickActionsSection
+                    compareContrastSection
                     wrongAnswersSection
                     weakTopicsSection
                     overallStatsSection
@@ -49,6 +51,9 @@ struct HomeView: View {
             }
             .navigationDestination(isPresented: $showWeakTopics) {
                 WeakTopicsView()
+            }
+            .navigationDestination(isPresented: $showCompare) {
+                CompareListView()
             }
         }
     }
@@ -174,6 +179,49 @@ struct HomeView: View {
                 .fill(Color(.systemBackground))
                 .shadow(color: .black.opacity(0.05), radius: 8, y: 2)
         )
+    }
+
+    // MARK: - Compare & Contrast
+
+    private var compareContrastSection: some View {
+        Button {
+            showCompare = true
+        } label: {
+            HStack(spacing: 14) {
+                ZStack {
+                    RoundedRectangle(cornerRadius: 14)
+                        .fill(Color.indigo.gradient)
+                        .frame(width: 50, height: 50)
+
+                    Image(systemName: "arrow.left.arrow.right")
+                        .font(.title2)
+                        .foregroundColor(.white)
+                }
+
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Compare & Contrast")
+                        .font(.subheadline)
+                        .fontWeight(.semibold)
+                        .foregroundColor(.primary)
+
+                    Text("\(CompareData.allCards.count) side-by-side comparison cards")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+
+                Spacer()
+
+                Image(systemName: "chevron.right")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            }
+            .padding()
+            .background(
+                RoundedRectangle(cornerRadius: 16)
+                    .fill(Color(.systemBackground))
+                    .shadow(color: .black.opacity(0.05), radius: 8, y: 2)
+            )
+        }
     }
 
     // MARK: - Wrong Answers
