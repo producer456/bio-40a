@@ -2,6 +2,7 @@ import SwiftUI
 
 struct ImageQuizView: View {
     @Environment(\.dismiss) private var dismiss
+    @EnvironmentObject var progress: ProgressManager
 
     let quizSet: ImageQuizSet
 
@@ -391,6 +392,17 @@ struct ImageQuizView: View {
 
     private func finishQuiz() {
         finishedTime = Date().timeIntervalSince(startTime)
+        let attempt = QuizAttempt(
+            id: UUID().uuidString,
+            quizId: "image-\(quizSet.id)",
+            date: Date(),
+            answers: answers,
+            score: correctCount,
+            totalQuestions: quizSet.questionCount,
+            timeSpent: finishedTime
+        )
+        progress.recordQuizAttempt(attempt, weekNumber: 1)
+        progress.addStudyTime(finishedTime, weekNumber: 1)
         withAnimation { isFinished = true }
     }
 
@@ -411,4 +423,5 @@ struct ImageQuizView: View {
     NavigationStack {
         ImageQuizView(quizSet: ImageQuizData.quizSets[0])
     }
+    .environmentObject(ProgressManager())
 }

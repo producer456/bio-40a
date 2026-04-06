@@ -6,6 +6,7 @@ struct CompareCardView: View {
 
     @State private var currentIndex: Int = 0
     @State private var revealedSide: RevealSide = .both
+    @State private var revealedCategories: Set<String> = []
     @Environment(\.dismiss) private var dismiss
 
     enum RevealSide: String, CaseIterable {
@@ -52,6 +53,12 @@ struct CompareCardView: View {
         }
         .navigationTitle(cards.indices.contains(currentIndex) ? cards[currentIndex].title : "Compare")
         .navigationBarTitleDisplayMode(.inline)
+        .onChange(of: revealedSide) { _, _ in
+            revealedCategories.removeAll()
+        }
+        .onChange(of: currentIndex) { _, _ in
+            revealedCategories.removeAll()
+        }
     }
 
     // MARK: - Card Content
@@ -114,9 +121,9 @@ struct CompareCardView: View {
                 // Value A
                 valueCell(
                     text: category.valueA,
-                    isHidden: revealedSide == .hideA,
+                    isHidden: revealedSide == .hideA && !revealedCategories.contains("\(category.id)-A"),
                     tintColor: .blue.opacity(0.05),
-                    side: .hideA
+                    categoryRevealId: "\(category.id)-A"
                 )
 
                 Divider()
@@ -124,9 +131,9 @@ struct CompareCardView: View {
                 // Value B
                 valueCell(
                     text: category.valueB,
-                    isHidden: revealedSide == .hideB,
+                    isHidden: revealedSide == .hideB && !revealedCategories.contains("\(category.id)-B"),
                     tintColor: .orange.opacity(0.05),
-                    side: .hideB
+                    categoryRevealId: "\(category.id)-B"
                 )
             }
             .background(isEven ? Color(.systemBackground) : Color(.secondarySystemBackground))
@@ -136,14 +143,14 @@ struct CompareCardView: View {
     }
 
     @ViewBuilder
-    private func valueCell(text: String, isHidden: Bool, tintColor: Color, side: RevealSide) -> some View {
+    private func valueCell(text: String, isHidden: Bool, tintColor: Color, categoryRevealId: String) -> some View {
         ZStack {
             tintColor
 
             if isHidden {
                 Button {
                     withAnimation(.easeInOut(duration: 0.25)) {
-                        revealedSide = .both
+                        let _ = revealedCategories.insert(categoryRevealId)
                     }
                 } label: {
                     VStack(spacing: 4) {

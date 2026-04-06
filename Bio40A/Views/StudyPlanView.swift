@@ -267,41 +267,39 @@ struct StudyPlanView: View {
     @State private var navigateToFlashcardDeck: String?
 
     var body: some View {
-        NavigationStack {
-            ScrollView {
-                VStack(spacing: 20) {
-                    headerSection
-                    if generator.tasks.isEmpty {
-                        allCaughtUpSection
-                    } else {
-                        startStudyingButton
-                        taskListSection
-                    }
-                }
-                .padding()
-            }
-            .background(Color(.systemGroupedBackground))
-            .navigationTitle("Study Plan")
-            .onAppear {
-                generator.generate(progress: progress)
-            }
-            .onChange(of: progress.completedAssignments) { oldValue, newValue in
-                generator.generate(progress: progress)
-            }
-            .navigationDestination(item: $navigateToLesson) { lessonId in
-                if let lesson = CourseContent.lessons.first(where: { $0.id == lessonId }) {
-                    LessonDetailView(lesson: lesson)
+        ScrollView {
+            VStack(spacing: 20) {
+                headerSection
+                if generator.tasks.isEmpty {
+                    allCaughtUpSection
+                } else {
+                    startStudyingButton
+                    taskListSection
                 }
             }
-            .navigationDestination(item: $navigateToQuiz) { quizId in
-                let allQuizzes = CourseContent.quizzes + CourseContent.practiceExams
-                if let quiz = allQuizzes.first(where: { $0.id == quizId }) {
-                    QuizView(quiz: quiz)
-                }
+            .padding()
+        }
+        .background(Color(.systemGroupedBackground))
+        .navigationTitle("Study Plan")
+        .onAppear {
+            generator.generate(progress: progress)
+        }
+        .onChange(of: progress.completedAssignments) { oldValue, newValue in
+            generator.generate(progress: progress)
+        }
+        .navigationDestination(item: $navigateToLesson) { lessonId in
+            if let lesson = CourseContent.lessons.first(where: { $0.id == lessonId }) {
+                LessonDetailView(lesson: lesson)
             }
-            .navigationDestination(item: $navigateToFlashcardDeck) { deckId in
-                FlashcardStudyView(deckId: deckId)
+        }
+        .navigationDestination(item: $navigateToQuiz) { quizId in
+            let allQuizzes = CourseContent.quizzes + CourseContent.practiceExams
+            if let quiz = allQuizzes.first(where: { $0.id == quizId }) {
+                QuizView(quiz: quiz)
             }
+        }
+        .navigationDestination(item: $navigateToFlashcardDeck) { deckId in
+            FlashcardStudyView(deckId: deckId)
         }
     }
 
