@@ -208,7 +208,11 @@ struct StudyProgressView: View {
                 .font(.headline)
                 .foregroundColor(.blue)
 
-            if progress.overallStats.strongTopics.isEmpty && progress.overallStats.weakTopics.isEmpty {
+            let strengths = progress.topicStrengths
+            let strong = strengths.filter { !$0.isWeak }
+            let weak = strengths.filter { $0.isWeak }
+
+            if strengths.isEmpty {
                 HStack {
                     Spacer()
                     VStack(spacing: 8) {
@@ -224,7 +228,7 @@ struct StudyProgressView: View {
                 }
             } else {
                 // Strong topics
-                if !progress.overallStats.strongTopics.isEmpty {
+                if !strong.isEmpty {
                     VStack(alignment: .leading, spacing: 6) {
                         HStack(spacing: 6) {
                             Image(systemName: "arrow.up.circle.fill")
@@ -236,22 +240,14 @@ struct StudyProgressView: View {
                                 .foregroundColor(.green)
                         }
 
-                        FlowLayout(items: progress.overallStats.strongTopics) { topic in
-                            Text(topic)
-                                .font(.caption)
-                                .padding(.horizontal, 10)
-                                .padding(.vertical, 5)
-                                .background(
-                                    Capsule()
-                                        .fill(Color.green.opacity(0.12))
-                                )
-                                .foregroundColor(.green)
+                        ForEach(strong) { topic in
+                            topicStrengthRow(topic, color: .green)
                         }
                     }
                 }
 
                 // Weak topics
-                if !progress.overallStats.weakTopics.isEmpty {
+                if !weak.isEmpty {
                     VStack(alignment: .leading, spacing: 6) {
                         HStack(spacing: 6) {
                             Image(systemName: "arrow.down.circle.fill")
@@ -263,16 +259,8 @@ struct StudyProgressView: View {
                                 .foregroundColor(.red)
                         }
 
-                        FlowLayout(items: progress.overallStats.weakTopics) { topic in
-                            Text(topic)
-                                .font(.caption)
-                                .padding(.horizontal, 10)
-                                .padding(.vertical, 5)
-                                .background(
-                                    Capsule()
-                                        .fill(Color.red.opacity(0.12))
-                                )
-                                .foregroundColor(.red)
+                        ForEach(weak) { topic in
+                            topicStrengthRow(topic, color: .red)
                         }
                     }
                 }
@@ -284,6 +272,36 @@ struct StudyProgressView: View {
                 .fill(Color(.systemBackground))
                 .shadow(color: .black.opacity(0.05), radius: 8, y: 2)
         )
+    }
+
+    private func topicStrengthRow(_ topic: ProgressManager.TopicStrength, color: Color) -> some View {
+        VStack(spacing: 4) {
+            HStack {
+                Text(topic.topic)
+                    .font(.caption)
+                    .fontWeight(.medium)
+                Spacer()
+                Text("\(topic.correctCount)/\(topic.totalCount)")
+                    .font(.caption2)
+                    .foregroundColor(.secondary)
+                Text(String(format: "%.0f%%", topic.percentage))
+                    .font(.caption)
+                    .fontWeight(.semibold)
+                    .foregroundColor(color)
+            }
+            GeometryReader { geo in
+                ZStack(alignment: .leading) {
+                    RoundedRectangle(cornerRadius: 3)
+                        .fill(color.opacity(0.15))
+                        .frame(height: 6)
+                    RoundedRectangle(cornerRadius: 3)
+                        .fill(color)
+                        .frame(width: geo.size.width * min(1.0, topic.percentage / 100.0), height: 6)
+                }
+            }
+            .frame(height: 6)
+        }
+        .padding(.vertical, 2)
     }
 
     // MARK: - Weekly Breakdown

@@ -181,10 +181,25 @@ struct LessonListView: View {
                 ForEach(searchResultsGrouped, id: \.0) { lessonTitle, results in
                     Section {
                         ForEach(results) { result in
-                            if let lesson = result.lesson {
+                            if let lesson = result.lesson, ContentUnlockManager.isUnlocked(lesson.weekNumber) {
                                 NavigationLink(destination: LessonDetailView(lesson: lesson)) {
                                     SearchResultRow(result: result, searchText: searchText)
                                 }
+                            } else if let lesson = result.lesson, !ContentUnlockManager.isUnlocked(lesson.weekNumber) {
+                                Button {
+                                    lockedAlertWeek = lesson.weekNumber
+                                    showLockedAlert = true
+                                } label: {
+                                    HStack {
+                                        SearchResultRow(result: result, searchText: searchText)
+                                        Spacer()
+                                        Image(systemName: "lock.fill")
+                                            .foregroundColor(.secondary)
+                                            .font(.caption)
+                                    }
+                                }
+                                .buttonStyle(.plain)
+                                .opacity(0.6)
                             } else {
                                 SearchResultRow(result: result, searchText: searchText)
                             }

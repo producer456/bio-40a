@@ -113,7 +113,7 @@ class ProgressManager: ObservableObject {
                         id: "\(latestAttempt.id)-\(index)",
                         question: question,
                         userAnswerIndex: userIndex,
-                        userAnswerText: userIndex < question.choices.count ? question.choices[userIndex] : "Unknown",
+                        userAnswerText: userIndex >= 0 && userIndex < question.choices.count ? question.choices[userIndex] : "Not answered",
                         correctAnswerText: question.choices[question.correctIndex],
                         quizTitle: quiz.title,
                         quizId: quiz.id,

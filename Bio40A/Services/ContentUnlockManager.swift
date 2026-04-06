@@ -22,7 +22,13 @@ class ContentUnlockManager {
 
     // For testing/development — unlock all content
     // Set to true during development since the course hasn't started yet
-    static var devUnlockAll = true
+    static var devUnlockAll: Bool {
+        get {
+            if UserDefaults.standard.object(forKey: "bio40a_devUnlockAll") == nil { return true }
+            return UserDefaults.standard.bool(forKey: "bio40a_devUnlockAll")
+        }
+        set { UserDefaults.standard.set(newValue, forKey: "bio40a_devUnlockAll") }
+    }
 
     static func isUnlocked(_ weekNumber: Int) -> Bool {
         if devUnlockAll { return true }

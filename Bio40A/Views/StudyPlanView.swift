@@ -285,7 +285,7 @@ struct StudyPlanView: View {
             .onAppear {
                 generator.generate(progress: progress)
             }
-            .onChange(of: progress.completedAssignments) { _ in
+            .onChange(of: progress.completedAssignments) { oldValue, newValue in
                 generator.generate(progress: progress)
             }
             .navigationDestination(item: $navigateToLesson) { lessonId in
@@ -409,7 +409,9 @@ struct StudyPlanView: View {
 
     private var startStudyingButton: some View {
         Button {
-            handleTaskAction(generator.tasks.first!)
+            if let firstTask = generator.tasks.first {
+                handleTaskAction(firstTask)
+            }
         } label: {
             HStack(spacing: 12) {
                 Image(systemName: "play.circle.fill")
@@ -688,7 +690,7 @@ struct StudyPlanCard: View {
         .onAppear {
             generator.generate(progress: progress)
         }
-        .onChange(of: progress.completedAssignments) { _ in
+        .onChange(of: progress.completedAssignments) { oldValue, newValue in
             generator.generate(progress: progress)
         }
     }

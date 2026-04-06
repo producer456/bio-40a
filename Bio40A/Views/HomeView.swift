@@ -331,10 +331,7 @@ struct HomeView: View {
 
     // MARK: - Helpers
 
-    private var currentWeekNumber: Int {
-        // Default to week 1 for now
-        1
-    }
+    private var currentWeekNumber: Int { ContentUnlockManager.currentWeek() }
 
     private var bestQuizScoreThisWeek: String {
         let weekScores = progress.weekProgress

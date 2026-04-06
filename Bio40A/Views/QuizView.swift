@@ -385,9 +385,15 @@ struct QuizView: View {
                             Image(systemName: "xmark.circle.fill")
                                 .foregroundColor(.red)
                                 .font(.caption)
-                            Text("Your answer: \(question.choices[answers[index]])")
-                                .font(.caption)
-                                .foregroundColor(.red)
+                            if answers[index] >= 0 && answers[index] < question.choices.count {
+                                Text("Your answer: \(question.choices[answers[index]])")
+                                    .font(.caption)
+                                    .foregroundColor(.red)
+                            } else {
+                                Text("Not answered")
+                                    .font(.caption)
+                                    .foregroundColor(.red)
+                            }
                         }
 
                         HStack(spacing: 6) {

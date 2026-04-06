@@ -2,7 +2,7 @@ import SwiftUI
 
 struct DiagramsView: View {
     var body: some View {
-        NavigationView {
+        NavigationStack {
             List {
                 Section(header: Text("Anatomical Orientation")) {
                     NavigationLink(destination: BodyPlanesView()) {

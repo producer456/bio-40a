@@ -16,6 +16,7 @@ struct QuickReviewView: View {
     // Timer
     @State private var timeRemaining: Double = 15.0
     @State private var timer: Timer?
+    @State private var isTransitioning = false
 
     private var currentCard: Flashcard? {
         guard currentIndex < cards.count else { return nil }
@@ -344,6 +345,7 @@ struct QuickReviewView: View {
         timer?.invalidate()
         timer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { _ in
             DispatchQueue.main.async {
+                guard !isTransitioning else { return }
                 if timeRemaining > 0 {
                     timeRemaining -= 0.1
                 } else {
@@ -355,7 +357,8 @@ struct QuickReviewView: View {
     }
 
     private func markKnown() {
-        guard currentIndex < cards.count else { return }
+        guard !isTransitioning, currentIndex < cards.count else { return }
+        isTransitioning = true
         let entry = cards[currentIndex]
         progress.updateFlashcard(deckId: entry.deckId, cardId: entry.card.id, rating: .good)
         knownCount += 1
@@ -363,7 +366,8 @@ struct QuickReviewView: View {
     }
 
     private func markUnknown() {
-        guard currentIndex < cards.count else { return }
+        guard !isTransitioning, currentIndex < cards.count else { return }
+        isTransitioning = true
         let entry = cards[currentIndex]
         progress.updateFlashcard(deckId: entry.deckId, cardId: entry.card.id, rating: .again)
         unknownCount += 1
@@ -376,11 +380,13 @@ struct QuickReviewView: View {
             withAnimation(.easeInOut(duration: 0.25)) {
                 currentIndex += 1
             }
+            isTransitioning = false
             startTimer()
         } else {
             withAnimation {
                 isFinished = true
             }
+            isTransitioning = false
         }
     }
 

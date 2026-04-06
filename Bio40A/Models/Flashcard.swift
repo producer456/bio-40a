@@ -33,7 +33,7 @@ struct Flashcard: Identifiable, Codable {
 enum CardRating: Int, CaseIterable {
     case again = 0      // complete blackout
     case hard = 1       // significant difficulty
-    case good = 3       // correct with effort
+    case good = 4       // correct with effort
     case easy = 5       // effortless recall
 
     var label: String {
