@@ -9,6 +9,7 @@ struct HomeView: View {
     @State private var showQuickReview = false
     @State private var showWeakTopics = false
     @State private var showCompare = false
+    @State private var showMistakePatterns = false
 
     var body: some View {
         NavigationStack {
@@ -20,6 +21,7 @@ struct HomeView: View {
                     weekProgressSection
                     quickActionsSection
                     compareContrastSection
+                    mistakePatternsSection
                     wrongAnswersSection
                     weakTopicsSection
                     overallStatsSection
@@ -54,6 +56,9 @@ struct HomeView: View {
             }
             .navigationDestination(isPresented: $showCompare) {
                 CompareListView()
+            }
+            .navigationDestination(isPresented: $showMistakePatterns) {
+                MistakePatternsView()
             }
         }
     }
@@ -221,6 +226,55 @@ struct HomeView: View {
                     .fill(Color(.systemBackground))
                     .shadow(color: .black.opacity(0.05), radius: 8, y: 2)
             )
+        }
+    }
+
+    // MARK: - Mistake Patterns
+
+    private var mistakePatternsSection: some View {
+        let patternCount = progress.mistakePatterns.count
+
+        return Group {
+            if patternCount > 0 {
+                Button {
+                    showMistakePatterns = true
+                } label: {
+                    HStack(spacing: 14) {
+                        ZStack {
+                            RoundedRectangle(cornerRadius: 14)
+                                .fill(Color.pink.gradient)
+                                .frame(width: 50, height: 50)
+
+                            Image(systemName: "brain.head.profile")
+                                .font(.title2)
+                                .foregroundColor(.white)
+                        }
+
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("Mistake Patterns")
+                                .font(.subheadline)
+                                .fontWeight(.semibold)
+                                .foregroundColor(.primary)
+
+                            Text("\(patternCount) confusion pattern\(patternCount == 1 ? "" : "s") found")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
+
+                        Spacer()
+
+                        Image(systemName: "chevron.right")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
+                    .padding()
+                    .background(
+                        RoundedRectangle(cornerRadius: 16)
+                            .fill(Color(.systemBackground))
+                            .shadow(color: .black.opacity(0.05), radius: 8, y: 2)
+                    )
+                }
+            }
         }
     }
 

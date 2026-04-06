@@ -397,6 +397,219 @@ class ProgressManager: ObservableObject {
         )
     }
 
+    // MARK: - Mistake Pattern Analysis
+
+    struct MistakePattern: Identifiable {
+        let id: String
+        let pattern: String          // "You confuse osteoblasts with osteoclasts"
+        let confusedTermA: String    // "Osteoblasts"
+        let confusedTermB: String    // "Osteoclasts"
+        let occurrences: Int         // how many times this confusion happened
+        let suggestion: String       // mnemonic / tip
+        let relatedQuestionIds: [String]
+    }
+
+    /// Pre-populated confusion pairs common in Anatomy & Physiology with mnemonics.
+    static let confusionPairs: [(termA: String, termB: String, mnemonic: String)] = [
+        ("Osteoblast", "Osteoclast",
+         "Osteoblasts BUILD bone (B for Build). Osteoclasts CONSUME/CHEW bone (C for Consume)."),
+        ("Anterior", "Posterior",
+         "Anterior = front (think 'Ante' like 'Antechamber' = the room in front). Posterior = behind."),
+        ("Proximal", "Distal",
+         "Proximal is CLOSE to the trunk (proximity = closeness). Distal is DISTANT from it."),
+        ("Afferent", "Efferent",
+         "Afferent ARRIVES at the CNS (A for Arrive). Efferent EXITS the CNS (E for Exit)."),
+        ("Anabolism", "Catabolism",
+         "Anabolism builds up molecules (A = Assemble). Catabolism breaks them down (C = Cut apart)."),
+        ("Mitosis", "Meiosis",
+         "Mitosis = identical copies, 2 diploid cells. Meiosis = mix & halve, 4 haploid cells. 'Mei' sounds like 'my unique offspring.'"),
+        ("Compact bone", "Spongy bone",
+         "Compact bone is dense, outer layer with osteons. Spongy bone is porous, inner layer with trabeculae. Think: a sponge has holes."),
+        ("Sympathetic", "Parasympathetic",
+         "Sympathetic = fight or flight (S for Stress). Parasympathetic = rest and digest (P for Peace)."),
+        ("Flexion", "Extension",
+         "Flexion FOLDS/decreases the angle (think 'flex your bicep'). Extension EXTENDS/increases the angle."),
+        ("Abduction", "Adduction",
+         "ABduction moves AWAY from midline (ABduct = take away). ADDuction ADDs the limb back toward midline."),
+        ("Eccrine", "Apocrine",
+         "Eccrine glands are EVERYWHERE for cooling (E for Everywhere). Apocrine glands are in the Armpit/groin (A for Armpit)."),
+        ("Actin", "Myosin",
+         "Actin is the thin filament (A = thin like the letter A). Myosin is the thick filament with heads that pull actin."),
+        ("Dendrite", "Axon",
+         "Dendrites DETECT signals (D for Detect, many branches receiving input). Axons AWAY-carry signals (A for Away, single long fiber)."),
+        ("Epidermis", "Dermis",
+         "Epidermis is on top (Epi = above, like 'epicenter'). Dermis is below, containing blood vessels and nerves."),
+        ("Concentric", "Eccentric",
+         "Concentric contraction = muscle SHORTENS (Con = come together). Eccentric = muscle LENGTHENS under load (Ec = extends out).")
+    ]
+
+    /// Analyzes all wrong answers across ALL quiz attempts (not just the latest) to find
+    /// repeated confusion patterns — especially pairs of terms the user keeps mixing up.
+    var mistakePatterns: [MistakePattern] {
+        let allQuizzes = CourseContent.quizzes + CourseContent.practiceExams
+
+        // Collect every wrong answer across every attempt (not just latest)
+        struct WrongEntry {
+            let questionId: String
+            let userAnswer: String
+            let correctAnswer: String
+        }
+
+        var wrongEntries: [WrongEntry] = []
+
+        for attempt in quizAttempts {
+            guard let quiz = allQuizzes.first(where: { $0.id == attempt.quizId }) else { continue }
+            for (index, question) in quiz.questions.enumerated() {
+                guard index < attempt.answers.count else { continue }
+                let userIdx = attempt.answers[index]
+                if userIdx != question.correctIndex,
+                   userIdx >= 0, userIdx < question.choices.count {
+                    wrongEntries.append(WrongEntry(
+                        questionId: question.id,
+                        userAnswer: question.choices[userIdx],
+                        correctAnswer: question.choices[question.correctIndex]
+                    ))
+                }
+            }
+        }
+
+        guard !wrongEntries.isEmpty else { return [] }
+
+        // Strategy 1: Find repeated same-wrong-answer on the same question
+        // Group by questionId and look for the same wrong answer chosen multiple times
+        var repeatedMistakes: [String: Int] = [:]  // "questionId|userAnswer" -> count
+        var repeatedQuestionIds: [String: [String]] = [:]
+        for entry in wrongEntries {
+            let key = "\(entry.questionId)|\(entry.userAnswer)"
+            repeatedMistakes[key, default: 0] += 1
+            repeatedQuestionIds[key, default: []].append(entry.questionId)
+        }
+
+        // Strategy 2: Match against known confusion pairs
+        var patterns: [MistakePattern] = []
+        var seenPairKeys = Set<String>()
+
+        for pair in Self.confusionPairs {
+            let termALower = pair.termA.lowercased()
+            let termBLower = pair.termB.lowercased()
+
+            // Find entries where user picked something containing termA when answer was termB, or vice versa
+            var matchingQuestionIds: [String] = []
+            var count = 0
+
+            for entry in wrongEntries {
+                let userLower = entry.userAnswer.lowercased()
+                let correctLower = entry.correctAnswer.lowercased()
+
+                let aInUser = userLower.contains(termALower)
+                let bInUser = userLower.contains(termBLower)
+                let aInCorrect = correctLower.contains(termALower)
+                let bInCorrect = correctLower.contains(termBLower)
+
+                // User picked A when correct was B, or user picked B when correct was A
+                if (aInUser && bInCorrect) || (bInUser && aInCorrect) {
+                    count += 1
+                    if !matchingQuestionIds.contains(entry.questionId) {
+                        matchingQuestionIds.append(entry.questionId)
+                    }
+                }
+            }
+
+            if count > 0 {
+                let pairKey = "\(pair.termA)|\(pair.termB)"
+                seenPairKeys.insert(pairKey)
+                patterns.append(MistakePattern(
+                    id: pairKey,
+                    pattern: "You confuse \(pair.termA) with \(pair.termB)",
+                    confusedTermA: pair.termA,
+                    confusedTermB: pair.termB,
+                    occurrences: count,
+                    suggestion: pair.mnemonic,
+                    relatedQuestionIds: matchingQuestionIds
+                ))
+            }
+        }
+
+        // Strategy 3: Detect ad-hoc repeated confusions not in the known pairs list
+        // Look for any wrong answer repeated 2+ times on the same question
+        for (key, count) in repeatedMistakes where count >= 2 {
+            let parts = key.split(separator: "|", maxSplits: 1)
+            guard parts.count == 2 else { continue }
+            let questionId = String(parts[0])
+            let userAnswer = String(parts[1])
+
+            // Find the correct answer for this question
+            guard let correctAnswer = wrongEntries.first(where: {
+                $0.questionId == questionId && $0.userAnswer == userAnswer
+            })?.correctAnswer else { continue }
+
+            // Skip if already covered by a known pair
+            let pairKey1 = "\(userAnswer)|\(correctAnswer)"
+            let pairKey2 = "\(correctAnswer)|\(userAnswer)"
+            if seenPairKeys.contains(pairKey1) || seenPairKeys.contains(pairKey2) { continue }
+
+            let adHocKey = "adhoc-\(questionId)-\(userAnswer.hashValue)"
+            if seenPairKeys.contains(adHocKey) { continue }
+            seenPairKeys.insert(adHocKey)
+
+            patterns.append(MistakePattern(
+                id: adHocKey,
+                pattern: "You keep picking \"\(userAnswer)\" instead of \"\(correctAnswer)\"",
+                confusedTermA: userAnswer,
+                confusedTermB: correctAnswer,
+                occurrences: count,
+                suggestion: "Review the difference between \"\(userAnswer)\" and \"\(correctAnswer)\". Try creating a flashcard to reinforce the correct answer.",
+                relatedQuestionIds: repeatedQuestionIds[key] ?? [questionId]
+            ))
+        }
+
+        return patterns.sorted { $0.occurrences > $1.occurrences }
+    }
+
+    /// Generates a mini-quiz from questions related to a specific mistake pattern.
+    func generateMistakePatternQuiz(for pattern: MistakePattern) -> Quiz? {
+        let allQuizzes = CourseContent.quizzes + CourseContent.practiceExams
+        let allQuestions = allQuizzes.flatMap(\.questions)
+
+        // Get questions by ID from the pattern
+        var questions = allQuestions.filter { pattern.relatedQuestionIds.contains($0.id) }
+
+        // Also find other questions that mention either confused term
+        let termALower = pattern.confusedTermA.lowercased()
+        let termBLower = pattern.confusedTermB.lowercased()
+
+        let additional = allQuestions.filter { q in
+            !pattern.relatedQuestionIds.contains(q.id) &&
+            (q.question.lowercased().contains(termALower) ||
+             q.question.lowercased().contains(termBLower) ||
+             q.choices.contains(where: { $0.lowercased().contains(termALower) }) ||
+             q.choices.contains(where: { $0.lowercased().contains(termBLower) }))
+        }
+
+        questions.append(contentsOf: additional)
+
+        // Deduplicate
+        var seen = Set<String>()
+        var unique: [QuizQuestion] = []
+        for q in questions {
+            if !seen.contains(q.id) {
+                seen.insert(q.id)
+                unique.append(q)
+            }
+        }
+
+        guard !unique.isEmpty else { return nil }
+
+        return Quiz(
+            id: "mistake-pattern-\(pattern.id)",
+            title: "Practice: \(pattern.confusedTermA) vs \(pattern.confusedTermB)",
+            weekNumber: 0,
+            lessonIds: [],
+            questions: unique.shuffled(),
+            timeLimit: nil
+        )
+    }
+
     // MARK: - Reset
 
     func resetAllProgress() {
